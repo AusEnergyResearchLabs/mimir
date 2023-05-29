@@ -54,8 +54,8 @@ local filename = 'mimir-reads.json';
             )
           )
         ||| % {
-          queryFrontend: $.jobMatcher($._config.job_names.query_frontend),
-          ruler: $.jobMatcher($._config.job_names.ruler),
+          queryFrontend: $.appMatcher($._config.app_names.query_frontend),
+          ruler: $.appMatcher($._config.app_names.ruler),
         }, format='reqps') +
         $.panelDescription(
           'Instant queries per second',
@@ -120,12 +120,12 @@ local filename = 'mimir-reads.json';
       )
       .addPanel(
         $.panel('Latency') +
-        utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.jobSelector($._config.job_names.gateway) + [utils.selector.re('route', $.queries.read_http_routes_regex)])
+        utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.appSelector($._config.app_names.gateway) + [utils.selector.re('route', $.queries.read_http_routes_regex)])
       )
       .addPanel(
         $.timeseriesPanel('Per %s p99 latency' % $._config.per_instance_label) +
         $.hiddenLegendQueryPanel(
-          'histogram_quantile(0.99, sum by(le, %s) (rate(cortex_request_duration_seconds_bucket{%s, route=~"%s"}[$__rate_interval])))' % [$._config.per_instance_label, $.jobMatcher($._config.job_names.gateway), $.queries.read_http_routes_regex], ''
+          'histogram_quantile(0.99, sum by(le, %s) (rate(cortex_request_duration_seconds_bucket{%s, route=~"%s"}[$__rate_interval])))' % [$._config.per_instance_label, $.appMatcher($._config.app_names.gateway), $.queries.read_http_routes_regex], ''
         )
       )
     )
@@ -137,12 +137,12 @@ local filename = 'mimir-reads.json';
       )
       .addPanel(
         $.panel('Latency') +
-        utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.jobSelector($._config.job_names.query_frontend) + [utils.selector.re('route', $.queries.read_http_routes_regex)])
+        utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.appSelector($._config.app_names.query_frontend) + [utils.selector.re('route', $.queries.read_http_routes_regex)])
       )
       .addPanel(
         $.timeseriesPanel('Per %s p99 latency' % $._config.per_instance_label) +
         $.hiddenLegendQueryPanel(
-          'histogram_quantile(0.99, sum by(le, %s) (rate(cortex_request_duration_seconds_bucket{%s, route=~"%s"}[$__rate_interval])))' % [$._config.per_instance_label, $.jobMatcher($._config.job_names.query_frontend), $.queries.read_http_routes_regex], ''
+          'histogram_quantile(0.99, sum by(le, %s) (rate(cortex_request_duration_seconds_bucket{%s, route=~"%s"}[$__rate_interval])))' % [$._config.per_instance_label, $.appMatcher($._config.app_names.query_frontend), $.queries.read_http_routes_regex], ''
         )
       )
     )
@@ -164,11 +164,11 @@ local filename = 'mimir-reads.json';
       )
       .addPanel(
         $.panel('Requests / sec') +
-        $.qpsPanel('cortex_query_scheduler_queue_duration_seconds_count{%s}' % $.jobMatcher($._config.job_names.query_scheduler))
+        $.qpsPanel('cortex_query_scheduler_queue_duration_seconds_count{%s}' % $.appMatcher($._config.app_names.query_scheduler))
       )
       .addPanel(
         $.panel('Latency (Time in Queue)') +
-        $.latencyPanel('cortex_query_scheduler_queue_duration_seconds', '{%s}' % $.jobMatcher($._config.job_names.query_scheduler))
+        $.latencyPanel('cortex_query_scheduler_queue_duration_seconds', '{%s}' % $.appMatcher($._config.app_names.query_scheduler))
       )
     )
     .addRow(
@@ -183,7 +183,7 @@ local filename = 'mimir-reads.json';
               rate(thanos_cache_operations_total{name="frontend-cache", %(frontend)s}[$__rate_interval])
             )
           ||| % {
-            frontend: $.jobMatcher($._config.job_names.query_frontend),
+            frontend: $.appMatcher($._config.app_names.query_frontend),
           },
           'Requests/s'
         ) +
@@ -194,7 +194,7 @@ local filename = 'mimir-reads.json';
         $.backwardsCompatibleLatencyPanel(
           'thanos_memcached_operation_duration_seconds',
           'thanos_cache_operation_duration_seconds',
-          '{%s, name="frontend-cache"}' % $.jobMatcher($._config.job_names.query_frontend)
+          '{%s, name="frontend-cache"}' % $.appMatcher($._config.app_names.query_frontend)
         )
       )
     )
@@ -202,16 +202,16 @@ local filename = 'mimir-reads.json';
       $.row('Querier')
       .addPanel(
         $.panel('Requests / sec') +
-        $.qpsPanel('cortex_querier_request_duration_seconds_count{%s, route=~"%s"}' % [$.jobMatcher($._config.job_names.querier), $.queries.read_http_routes_regex])
+        $.qpsPanel('cortex_querier_request_duration_seconds_count{%s, route=~"%s"}' % [$.appMatcher($._config.app_names.querier), $.queries.read_http_routes_regex])
       )
       .addPanel(
         $.panel('Latency') +
-        utils.latencyRecordingRulePanel('cortex_querier_request_duration_seconds', $.jobSelector($._config.job_names.querier) + [utils.selector.re('route', $.queries.read_http_routes_regex)])
+        utils.latencyRecordingRulePanel('cortex_querier_request_duration_seconds', $.appSelector($._config.app_names.querier) + [utils.selector.re('route', $.queries.read_http_routes_regex)])
       )
       .addPanel(
         $.timeseriesPanel('Per %s p99 latency' % $._config.per_instance_label) +
         $.hiddenLegendQueryPanel(
-          'histogram_quantile(0.99, sum by(le, %s) (rate(cortex_querier_request_duration_seconds_bucket{%s, route=~"%s"}[$__rate_interval])))' % [$._config.per_instance_label, $.jobMatcher($._config.job_names.querier), $.queries.read_http_routes_regex], ''
+          'histogram_quantile(0.99, sum by(le, %s) (rate(cortex_querier_request_duration_seconds_bucket{%s, route=~"%s"}[$__rate_interval])))' % [$._config.per_instance_label, $.appMatcher($._config.app_names.querier), $.queries.read_http_routes_regex], ''
         )
       )
     )
@@ -219,16 +219,16 @@ local filename = 'mimir-reads.json';
       $.row('Ingester')
       .addPanel(
         $.panel('Requests / sec') +
-        $.qpsPanel('cortex_request_duration_seconds_count{%s,route=~"/cortex.Ingester/Query(Stream)?|/cortex.Ingester/MetricsForLabelMatchers|/cortex.Ingester/LabelValues|/cortex.Ingester/MetricsMetadata"}' % $.jobMatcher($._config.job_names.ingester))
+        $.qpsPanel('cortex_request_duration_seconds_count{%s,route=~"/cortex.Ingester/Query(Stream)?|/cortex.Ingester/MetricsForLabelMatchers|/cortex.Ingester/LabelValues|/cortex.Ingester/MetricsMetadata"}' % $.appMatcher($._config.app_names.ingester))
       )
       .addPanel(
         $.panel('Latency') +
-        utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.jobSelector($._config.job_names.ingester) + [utils.selector.re('route', '/cortex.Ingester/Query(Stream)?|/cortex.Ingester/MetricsForLabelMatchers|/cortex.Ingester/LabelValues|/cortex.Ingester/MetricsMetadata')])
+        utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.appSelector($._config.app_names.ingester) + [utils.selector.re('route', '/cortex.Ingester/Query(Stream)?|/cortex.Ingester/MetricsForLabelMatchers|/cortex.Ingester/LabelValues|/cortex.Ingester/MetricsMetadata')])
       )
       .addPanel(
         $.timeseriesPanel('Per %s p99 latency' % $._config.per_instance_label) +
         $.hiddenLegendQueryPanel(
-          'histogram_quantile(0.99, sum by(le, %s) (rate(cortex_request_duration_seconds_bucket{%s, route=~"/cortex.Ingester/Query(Stream)?|/cortex.Ingester/MetricsForLabelMatchers|/cortex.Ingester/LabelValues|/cortex.Ingester/MetricsMetadata"}[$__rate_interval])))' % [$._config.per_instance_label, $.jobMatcher($._config.job_names.ingester)], ''
+          'histogram_quantile(0.99, sum by(le, %s) (rate(cortex_request_duration_seconds_bucket{%s, route=~"/cortex.Ingester/Query(Stream)?|/cortex.Ingester/MetricsForLabelMatchers|/cortex.Ingester/LabelValues|/cortex.Ingester/MetricsMetadata"}[$__rate_interval])))' % [$._config.per_instance_label, $.appMatcher($._config.app_names.ingester)], ''
         )
       )
     )
@@ -236,16 +236,16 @@ local filename = 'mimir-reads.json';
       $.row('Store-gateway')
       .addPanel(
         $.panel('Requests / sec') +
-        $.qpsPanel('cortex_request_duration_seconds_count{%s,route=~"/gatewaypb.StoreGateway/.*"}' % $.jobMatcher($._config.job_names.store_gateway))
+        $.qpsPanel('cortex_request_duration_seconds_count{%s,route=~"/gatewaypb.StoreGateway/.*"}' % $.appMatcher($._config.app_names.store_gateway))
       )
       .addPanel(
         $.panel('Latency') +
-        utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.jobSelector($._config.job_names.store_gateway) + [utils.selector.re('route', '/gatewaypb.StoreGateway/.*')])
+        utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.appSelector($._config.app_names.store_gateway) + [utils.selector.re('route', '/gatewaypb.StoreGateway/.*')])
       )
       .addPanel(
         $.timeseriesPanel('Per %s p99 latency' % $._config.per_instance_label) +
         $.hiddenLegendQueryPanel(
-          'histogram_quantile(0.99, sum by(le, %s) (rate(cortex_request_duration_seconds_bucket{%s, route=~"/gatewaypb.StoreGateway/.*"}[$__rate_interval])))' % [$._config.per_instance_label, $.jobMatcher($._config.job_names.store_gateway)], ''
+          'histogram_quantile(0.99, sum by(le, %s) (rate(cortex_request_duration_seconds_bucket{%s, route=~"/gatewaypb.StoreGateway/.*"}[$__rate_interval])))' % [$._config.per_instance_label, $.appMatcher($._config.app_names.store_gateway)], ''
         )
       )
     )
@@ -387,8 +387,8 @@ local filename = 'mimir-reads.json';
               )
             )
           ||| % [
-            $.jobMatcher($._config.job_names.store_gateway),
-            $.jobMatcher($._config.job_names.store_gateway),
+            $.appMatcher($._config.app_names.store_gateway),
+            $.appMatcher($._config.app_names.store_gateway),
           ],
           '{{operation}}'
         ) +
@@ -407,7 +407,7 @@ local filename = 'mimir-reads.json';
               component="store-gateway",
               name="index-cache"
             }
-          ||| % $.jobMatcher($._config.job_names.store_gateway)
+          ||| % $.appMatcher($._config.app_names.store_gateway)
         )
       )
       .addPanel(
@@ -432,8 +432,8 @@ local filename = 'mimir-reads.json';
               )
             )
           ||| % [
-            $.jobMatcher($._config.job_names.store_gateway),
-            $.jobMatcher($._config.job_names.store_gateway),
+            $.appMatcher($._config.app_names.store_gateway),
+            $.appMatcher($._config.app_names.store_gateway),
           ],
           '{{item_type}}'
         ) +
@@ -450,7 +450,7 @@ local filename = 'mimir-reads.json';
     .addRow(
       $.thanosMemcachedCache(
         'Memcached – chunks cache (store-gateway accesses)',
-        $._config.job_names.store_gateway,
+        $._config.app_names.store_gateway,
         'store-gateway',
         'chunks-cache'
       )
@@ -458,7 +458,7 @@ local filename = 'mimir-reads.json';
     .addRow(
       $.thanosMemcachedCache(
         'Memcached – metadata cache (store-gateway accesses)',
-        $._config.job_names.store_gateway,
+        $._config.app_names.store_gateway,
         'store-gateway',
         'metadata-cache'
       )
@@ -466,7 +466,7 @@ local filename = 'mimir-reads.json';
     .addRow(
       $.thanosMemcachedCache(
         'Memcached – metadata cache (querier accesses)',
-        $._config.job_names.querier,
+        $._config.app_names.querier,
         'querier',
         'metadata-cache'
       )

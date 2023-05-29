@@ -53,7 +53,7 @@ local filename = 'mimir-writes-resources.json';
       .addPanel(
         $.panel('In-memory series') +
         $.queryPanel(
-          'sum by(%s) (cortex_ingester_memory_series{%s})' % [$._config.per_instance_label, $.jobMatcher($._config.job_names.ingester)],
+          'sum by(%s) (cortex_ingester_memory_series{%s})' % [$._config.per_instance_label, $.appMatcher($._config.app_names.ingester)],
           '{{%s}}' % $._config.per_instance_label
         ) +
         {

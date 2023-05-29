@@ -2,302 +2,302 @@ groups:
 - name: mimir_api_1
   rules:
   - expr: histogram_quantile(0.99, sum(rate(cortex_request_duration_seconds_bucket[1m]))
-      by (le, cluster, job))
-    record: cluster_job:cortex_request_duration_seconds:99quantile
+      by (le, cluster, app))
+    record: cluster_app:cortex_request_duration_seconds:99quantile
   - expr: histogram_quantile(0.50, sum(rate(cortex_request_duration_seconds_bucket[1m]))
-      by (le, cluster, job))
-    record: cluster_job:cortex_request_duration_seconds:50quantile
-  - expr: sum(rate(cortex_request_duration_seconds_sum[1m])) by (cluster, job) / sum(rate(cortex_request_duration_seconds_count[1m]))
-      by (cluster, job)
-    record: cluster_job:cortex_request_duration_seconds:avg
-  - expr: sum(rate(cortex_request_duration_seconds_bucket[1m])) by (le, cluster, job)
-    record: cluster_job:cortex_request_duration_seconds_bucket:sum_rate
-  - expr: sum(rate(cortex_request_duration_seconds_sum[1m])) by (cluster, job)
-    record: cluster_job:cortex_request_duration_seconds_sum:sum_rate
-  - expr: sum(rate(cortex_request_duration_seconds_count[1m])) by (cluster, job)
-    record: cluster_job:cortex_request_duration_seconds_count:sum_rate
+      by (le, cluster, app))
+    record: cluster_app:cortex_request_duration_seconds:50quantile
+  - expr: sum(rate(cortex_request_duration_seconds_sum[1m])) by (cluster, app) / sum(rate(cortex_request_duration_seconds_count[1m]))
+      by (cluster, app)
+    record: cluster_app:cortex_request_duration_seconds:avg
+  - expr: sum(rate(cortex_request_duration_seconds_bucket[1m])) by (le, cluster, app)
+    record: cluster_app:cortex_request_duration_seconds_bucket:sum_rate
+  - expr: sum(rate(cortex_request_duration_seconds_sum[1m])) by (cluster, app)
+    record: cluster_app:cortex_request_duration_seconds_sum:sum_rate
+  - expr: sum(rate(cortex_request_duration_seconds_count[1m])) by (cluster, app)
+    record: cluster_app:cortex_request_duration_seconds_count:sum_rate
 - name: mimir_api_2
   rules:
   - expr: histogram_quantile(0.99, sum(rate(cortex_request_duration_seconds_bucket[1m]))
-      by (le, cluster, job, route))
-    record: cluster_job_route:cortex_request_duration_seconds:99quantile
+      by (le, cluster, app, route))
+    record: cluster_app_route:cortex_request_duration_seconds:99quantile
   - expr: histogram_quantile(0.50, sum(rate(cortex_request_duration_seconds_bucket[1m]))
-      by (le, cluster, job, route))
-    record: cluster_job_route:cortex_request_duration_seconds:50quantile
-  - expr: sum(rate(cortex_request_duration_seconds_sum[1m])) by (cluster, job, route)
-      / sum(rate(cortex_request_duration_seconds_count[1m])) by (cluster, job, route)
-    record: cluster_job_route:cortex_request_duration_seconds:avg
-  - expr: sum(rate(cortex_request_duration_seconds_bucket[1m])) by (le, cluster, job,
+      by (le, cluster, app, route))
+    record: cluster_app_route:cortex_request_duration_seconds:50quantile
+  - expr: sum(rate(cortex_request_duration_seconds_sum[1m])) by (cluster, app, route)
+      / sum(rate(cortex_request_duration_seconds_count[1m])) by (cluster, app, route)
+    record: cluster_app_route:cortex_request_duration_seconds:avg
+  - expr: sum(rate(cortex_request_duration_seconds_bucket[1m])) by (le, cluster, app,
       route)
-    record: cluster_job_route:cortex_request_duration_seconds_bucket:sum_rate
-  - expr: sum(rate(cortex_request_duration_seconds_sum[1m])) by (cluster, job, route)
-    record: cluster_job_route:cortex_request_duration_seconds_sum:sum_rate
-  - expr: sum(rate(cortex_request_duration_seconds_count[1m])) by (cluster, job, route)
-    record: cluster_job_route:cortex_request_duration_seconds_count:sum_rate
+    record: cluster_app_route:cortex_request_duration_seconds_bucket:sum_rate
+  - expr: sum(rate(cortex_request_duration_seconds_sum[1m])) by (cluster, app, route)
+    record: cluster_app_route:cortex_request_duration_seconds_sum:sum_rate
+  - expr: sum(rate(cortex_request_duration_seconds_count[1m])) by (cluster, app, route)
+    record: cluster_app_route:cortex_request_duration_seconds_count:sum_rate
 - name: mimir_api_3
   rules:
   - expr: histogram_quantile(0.99, sum(rate(cortex_request_duration_seconds_bucket[1m]))
-      by (le, cluster, namespace, job, route))
-    record: cluster_namespace_job_route:cortex_request_duration_seconds:99quantile
+      by (le, cluster, namespace, app, route))
+    record: cluster_namespace_app_route:cortex_request_duration_seconds:99quantile
   - expr: histogram_quantile(0.50, sum(rate(cortex_request_duration_seconds_bucket[1m]))
-      by (le, cluster, namespace, job, route))
-    record: cluster_namespace_job_route:cortex_request_duration_seconds:50quantile
+      by (le, cluster, namespace, app, route))
+    record: cluster_namespace_app_route:cortex_request_duration_seconds:50quantile
   - expr: sum(rate(cortex_request_duration_seconds_sum[1m])) by (cluster, namespace,
-      job, route) / sum(rate(cortex_request_duration_seconds_count[1m])) by (cluster,
-      namespace, job, route)
-    record: cluster_namespace_job_route:cortex_request_duration_seconds:avg
+      app, route) / sum(rate(cortex_request_duration_seconds_count[1m])) by (cluster,
+      namespace, app, route)
+    record: cluster_namespace_app_route:cortex_request_duration_seconds:avg
   - expr: sum(rate(cortex_request_duration_seconds_bucket[1m])) by (le, cluster, namespace,
-      job, route)
-    record: cluster_namespace_job_route:cortex_request_duration_seconds_bucket:sum_rate
+      app, route)
+    record: cluster_namespace_app_route:cortex_request_duration_seconds_bucket:sum_rate
   - expr: sum(rate(cortex_request_duration_seconds_sum[1m])) by (cluster, namespace,
-      job, route)
-    record: cluster_namespace_job_route:cortex_request_duration_seconds_sum:sum_rate
+      app, route)
+    record: cluster_namespace_app_route:cortex_request_duration_seconds_sum:sum_rate
   - expr: sum(rate(cortex_request_duration_seconds_count[1m])) by (cluster, namespace,
-      job, route)
-    record: cluster_namespace_job_route:cortex_request_duration_seconds_count:sum_rate
+      app, route)
+    record: cluster_namespace_app_route:cortex_request_duration_seconds_count:sum_rate
 - name: mimir_querier_api
   rules:
   - expr: histogram_quantile(0.99, sum(rate(cortex_querier_request_duration_seconds_bucket[1m]))
-      by (le, cluster, job))
-    record: cluster_job:cortex_querier_request_duration_seconds:99quantile
+      by (le, cluster, app))
+    record: cluster_app:cortex_querier_request_duration_seconds:99quantile
   - expr: histogram_quantile(0.50, sum(rate(cortex_querier_request_duration_seconds_bucket[1m]))
-      by (le, cluster, job))
-    record: cluster_job:cortex_querier_request_duration_seconds:50quantile
+      by (le, cluster, app))
+    record: cluster_app:cortex_querier_request_duration_seconds:50quantile
   - expr: sum(rate(cortex_querier_request_duration_seconds_sum[1m])) by (cluster,
-      job) / sum(rate(cortex_querier_request_duration_seconds_count[1m])) by (cluster,
-      job)
-    record: cluster_job:cortex_querier_request_duration_seconds:avg
+      app) / sum(rate(cortex_querier_request_duration_seconds_count[1m])) by (cluster,
+      app)
+    record: cluster_app:cortex_querier_request_duration_seconds:avg
   - expr: sum(rate(cortex_querier_request_duration_seconds_bucket[1m])) by (le, cluster,
-      job)
-    record: cluster_job:cortex_querier_request_duration_seconds_bucket:sum_rate
+      app)
+    record: cluster_app:cortex_querier_request_duration_seconds_bucket:sum_rate
   - expr: sum(rate(cortex_querier_request_duration_seconds_sum[1m])) by (cluster,
-      job)
-    record: cluster_job:cortex_querier_request_duration_seconds_sum:sum_rate
+      app)
+    record: cluster_app:cortex_querier_request_duration_seconds_sum:sum_rate
   - expr: sum(rate(cortex_querier_request_duration_seconds_count[1m])) by (cluster,
-      job)
-    record: cluster_job:cortex_querier_request_duration_seconds_count:sum_rate
+      app)
+    record: cluster_app:cortex_querier_request_duration_seconds_count:sum_rate
   - expr: histogram_quantile(0.99, sum(rate(cortex_querier_request_duration_seconds_bucket[1m]))
-      by (le, cluster, job, route))
-    record: cluster_job_route:cortex_querier_request_duration_seconds:99quantile
+      by (le, cluster, app, route))
+    record: cluster_app_route:cortex_querier_request_duration_seconds:99quantile
   - expr: histogram_quantile(0.50, sum(rate(cortex_querier_request_duration_seconds_bucket[1m]))
-      by (le, cluster, job, route))
-    record: cluster_job_route:cortex_querier_request_duration_seconds:50quantile
+      by (le, cluster, app, route))
+    record: cluster_app_route:cortex_querier_request_duration_seconds:50quantile
   - expr: sum(rate(cortex_querier_request_duration_seconds_sum[1m])) by (cluster,
-      job, route) / sum(rate(cortex_querier_request_duration_seconds_count[1m])) by
-      (cluster, job, route)
-    record: cluster_job_route:cortex_querier_request_duration_seconds:avg
+      app, route) / sum(rate(cortex_querier_request_duration_seconds_count[1m])) by
+      (cluster, app, route)
+    record: cluster_app_route:cortex_querier_request_duration_seconds:avg
   - expr: sum(rate(cortex_querier_request_duration_seconds_bucket[1m])) by (le, cluster,
-      job, route)
-    record: cluster_job_route:cortex_querier_request_duration_seconds_bucket:sum_rate
+      app, route)
+    record: cluster_app_route:cortex_querier_request_duration_seconds_bucket:sum_rate
   - expr: sum(rate(cortex_querier_request_duration_seconds_sum[1m])) by (cluster,
-      job, route)
-    record: cluster_job_route:cortex_querier_request_duration_seconds_sum:sum_rate
+      app, route)
+    record: cluster_app_route:cortex_querier_request_duration_seconds_sum:sum_rate
   - expr: sum(rate(cortex_querier_request_duration_seconds_count[1m])) by (cluster,
-      job, route)
-    record: cluster_job_route:cortex_querier_request_duration_seconds_count:sum_rate
+      app, route)
+    record: cluster_app_route:cortex_querier_request_duration_seconds_count:sum_rate
   - expr: histogram_quantile(0.99, sum(rate(cortex_querier_request_duration_seconds_bucket[1m]))
-      by (le, cluster, namespace, job, route))
-    record: cluster_namespace_job_route:cortex_querier_request_duration_seconds:99quantile
+      by (le, cluster, namespace, app, route))
+    record: cluster_namespace_app_route:cortex_querier_request_duration_seconds:99quantile
   - expr: histogram_quantile(0.50, sum(rate(cortex_querier_request_duration_seconds_bucket[1m]))
-      by (le, cluster, namespace, job, route))
-    record: cluster_namespace_job_route:cortex_querier_request_duration_seconds:50quantile
+      by (le, cluster, namespace, app, route))
+    record: cluster_namespace_app_route:cortex_querier_request_duration_seconds:50quantile
   - expr: sum(rate(cortex_querier_request_duration_seconds_sum[1m])) by (cluster,
-      namespace, job, route) / sum(rate(cortex_querier_request_duration_seconds_count[1m]))
-      by (cluster, namespace, job, route)
-    record: cluster_namespace_job_route:cortex_querier_request_duration_seconds:avg
+      namespace, app, route) / sum(rate(cortex_querier_request_duration_seconds_count[1m]))
+      by (cluster, namespace, app, route)
+    record: cluster_namespace_app_route:cortex_querier_request_duration_seconds:avg
   - expr: sum(rate(cortex_querier_request_duration_seconds_bucket[1m])) by (le, cluster,
-      namespace, job, route)
-    record: cluster_namespace_job_route:cortex_querier_request_duration_seconds_bucket:sum_rate
+      namespace, app, route)
+    record: cluster_namespace_app_route:cortex_querier_request_duration_seconds_bucket:sum_rate
   - expr: sum(rate(cortex_querier_request_duration_seconds_sum[1m])) by (cluster,
-      namespace, job, route)
-    record: cluster_namespace_job_route:cortex_querier_request_duration_seconds_sum:sum_rate
+      namespace, app, route)
+    record: cluster_namespace_app_route:cortex_querier_request_duration_seconds_sum:sum_rate
   - expr: sum(rate(cortex_querier_request_duration_seconds_count[1m])) by (cluster,
-      namespace, job, route)
-    record: cluster_namespace_job_route:cortex_querier_request_duration_seconds_count:sum_rate
+      namespace, app, route)
+    record: cluster_namespace_app_route:cortex_querier_request_duration_seconds_count:sum_rate
 - name: mimir_cache
   rules:
   - expr: histogram_quantile(0.99, sum(rate(cortex_memcache_request_duration_seconds_bucket[1m]))
-      by (le, cluster, job, method))
-    record: cluster_job_method:cortex_memcache_request_duration_seconds:99quantile
+      by (le, cluster, app, method))
+    record: cluster_app_method:cortex_memcache_request_duration_seconds:99quantile
   - expr: histogram_quantile(0.50, sum(rate(cortex_memcache_request_duration_seconds_bucket[1m]))
-      by (le, cluster, job, method))
-    record: cluster_job_method:cortex_memcache_request_duration_seconds:50quantile
+      by (le, cluster, app, method))
+    record: cluster_app_method:cortex_memcache_request_duration_seconds:50quantile
   - expr: sum(rate(cortex_memcache_request_duration_seconds_sum[1m])) by (cluster,
-      job, method) / sum(rate(cortex_memcache_request_duration_seconds_count[1m]))
-      by (cluster, job, method)
-    record: cluster_job_method:cortex_memcache_request_duration_seconds:avg
+      app, method) / sum(rate(cortex_memcache_request_duration_seconds_count[1m]))
+      by (cluster, app, method)
+    record: cluster_app_method:cortex_memcache_request_duration_seconds:avg
   - expr: sum(rate(cortex_memcache_request_duration_seconds_bucket[1m])) by (le, cluster,
-      job, method)
-    record: cluster_job_method:cortex_memcache_request_duration_seconds_bucket:sum_rate
+      app, method)
+    record: cluster_app_method:cortex_memcache_request_duration_seconds_bucket:sum_rate
   - expr: sum(rate(cortex_memcache_request_duration_seconds_sum[1m])) by (cluster,
-      job, method)
-    record: cluster_job_method:cortex_memcache_request_duration_seconds_sum:sum_rate
+      app, method)
+    record: cluster_app_method:cortex_memcache_request_duration_seconds_sum:sum_rate
   - expr: sum(rate(cortex_memcache_request_duration_seconds_count[1m])) by (cluster,
-      job, method)
-    record: cluster_job_method:cortex_memcache_request_duration_seconds_count:sum_rate
+      app, method)
+    record: cluster_app_method:cortex_memcache_request_duration_seconds_count:sum_rate
   - expr: histogram_quantile(0.99, sum(rate(cortex_cache_request_duration_seconds_bucket[1m]))
-      by (le, cluster, job))
-    record: cluster_job:cortex_cache_request_duration_seconds:99quantile
+      by (le, cluster, app))
+    record: cluster_app:cortex_cache_request_duration_seconds:99quantile
   - expr: histogram_quantile(0.50, sum(rate(cortex_cache_request_duration_seconds_bucket[1m]))
-      by (le, cluster, job))
-    record: cluster_job:cortex_cache_request_duration_seconds:50quantile
-  - expr: sum(rate(cortex_cache_request_duration_seconds_sum[1m])) by (cluster, job)
-      / sum(rate(cortex_cache_request_duration_seconds_count[1m])) by (cluster, job)
-    record: cluster_job:cortex_cache_request_duration_seconds:avg
+      by (le, cluster, app))
+    record: cluster_app:cortex_cache_request_duration_seconds:50quantile
+  - expr: sum(rate(cortex_cache_request_duration_seconds_sum[1m])) by (cluster, app)
+      / sum(rate(cortex_cache_request_duration_seconds_count[1m])) by (cluster, app)
+    record: cluster_app:cortex_cache_request_duration_seconds:avg
   - expr: sum(rate(cortex_cache_request_duration_seconds_bucket[1m])) by (le, cluster,
-      job)
-    record: cluster_job:cortex_cache_request_duration_seconds_bucket:sum_rate
-  - expr: sum(rate(cortex_cache_request_duration_seconds_sum[1m])) by (cluster, job)
-    record: cluster_job:cortex_cache_request_duration_seconds_sum:sum_rate
+      app)
+    record: cluster_app:cortex_cache_request_duration_seconds_bucket:sum_rate
+  - expr: sum(rate(cortex_cache_request_duration_seconds_sum[1m])) by (cluster, app)
+    record: cluster_app:cortex_cache_request_duration_seconds_sum:sum_rate
   - expr: sum(rate(cortex_cache_request_duration_seconds_count[1m])) by (cluster,
-      job)
-    record: cluster_job:cortex_cache_request_duration_seconds_count:sum_rate
+      app)
+    record: cluster_app:cortex_cache_request_duration_seconds_count:sum_rate
   - expr: histogram_quantile(0.99, sum(rate(cortex_cache_request_duration_seconds_bucket[1m]))
-      by (le, cluster, job, method))
-    record: cluster_job_method:cortex_cache_request_duration_seconds:99quantile
+      by (le, cluster, app, method))
+    record: cluster_app_method:cortex_cache_request_duration_seconds:99quantile
   - expr: histogram_quantile(0.50, sum(rate(cortex_cache_request_duration_seconds_bucket[1m]))
-      by (le, cluster, job, method))
-    record: cluster_job_method:cortex_cache_request_duration_seconds:50quantile
-  - expr: sum(rate(cortex_cache_request_duration_seconds_sum[1m])) by (cluster, job,
+      by (le, cluster, app, method))
+    record: cluster_app_method:cortex_cache_request_duration_seconds:50quantile
+  - expr: sum(rate(cortex_cache_request_duration_seconds_sum[1m])) by (cluster, app,
       method) / sum(rate(cortex_cache_request_duration_seconds_count[1m])) by (cluster,
-      job, method)
-    record: cluster_job_method:cortex_cache_request_duration_seconds:avg
+      app, method)
+    record: cluster_app_method:cortex_cache_request_duration_seconds:avg
   - expr: sum(rate(cortex_cache_request_duration_seconds_bucket[1m])) by (le, cluster,
-      job, method)
-    record: cluster_job_method:cortex_cache_request_duration_seconds_bucket:sum_rate
-  - expr: sum(rate(cortex_cache_request_duration_seconds_sum[1m])) by (cluster, job,
+      app, method)
+    record: cluster_app_method:cortex_cache_request_duration_seconds_bucket:sum_rate
+  - expr: sum(rate(cortex_cache_request_duration_seconds_sum[1m])) by (cluster, app,
       method)
-    record: cluster_job_method:cortex_cache_request_duration_seconds_sum:sum_rate
+    record: cluster_app_method:cortex_cache_request_duration_seconds_sum:sum_rate
   - expr: sum(rate(cortex_cache_request_duration_seconds_count[1m])) by (cluster,
-      job, method)
-    record: cluster_job_method:cortex_cache_request_duration_seconds_count:sum_rate
+      app, method)
+    record: cluster_app_method:cortex_cache_request_duration_seconds_count:sum_rate
 - name: mimir_storage
   rules:
   - expr: histogram_quantile(0.99, sum(rate(cortex_kv_request_duration_seconds_bucket[1m]))
-      by (le, cluster, job))
-    record: cluster_job:cortex_kv_request_duration_seconds:99quantile
+      by (le, cluster, app))
+    record: cluster_app:cortex_kv_request_duration_seconds:99quantile
   - expr: histogram_quantile(0.50, sum(rate(cortex_kv_request_duration_seconds_bucket[1m]))
-      by (le, cluster, job))
-    record: cluster_job:cortex_kv_request_duration_seconds:50quantile
-  - expr: sum(rate(cortex_kv_request_duration_seconds_sum[1m])) by (cluster, job)
-      / sum(rate(cortex_kv_request_duration_seconds_count[1m])) by (cluster, job)
-    record: cluster_job:cortex_kv_request_duration_seconds:avg
+      by (le, cluster, app))
+    record: cluster_app:cortex_kv_request_duration_seconds:50quantile
+  - expr: sum(rate(cortex_kv_request_duration_seconds_sum[1m])) by (cluster, app)
+      / sum(rate(cortex_kv_request_duration_seconds_count[1m])) by (cluster, app)
+    record: cluster_app:cortex_kv_request_duration_seconds:avg
   - expr: sum(rate(cortex_kv_request_duration_seconds_bucket[1m])) by (le, cluster,
-      job)
-    record: cluster_job:cortex_kv_request_duration_seconds_bucket:sum_rate
-  - expr: sum(rate(cortex_kv_request_duration_seconds_sum[1m])) by (cluster, job)
-    record: cluster_job:cortex_kv_request_duration_seconds_sum:sum_rate
-  - expr: sum(rate(cortex_kv_request_duration_seconds_count[1m])) by (cluster, job)
-    record: cluster_job:cortex_kv_request_duration_seconds_count:sum_rate
+      app)
+    record: cluster_app:cortex_kv_request_duration_seconds_bucket:sum_rate
+  - expr: sum(rate(cortex_kv_request_duration_seconds_sum[1m])) by (cluster, app)
+    record: cluster_app:cortex_kv_request_duration_seconds_sum:sum_rate
+  - expr: sum(rate(cortex_kv_request_duration_seconds_count[1m])) by (cluster, app)
+    record: cluster_app:cortex_kv_request_duration_seconds_count:sum_rate
 - name: mimir_queries
   rules:
   - expr: histogram_quantile(0.99, sum(rate(cortex_query_frontend_retries_bucket[1m]))
-      by (le, cluster, job))
-    record: cluster_job:cortex_query_frontend_retries:99quantile
+      by (le, cluster, app))
+    record: cluster_app:cortex_query_frontend_retries:99quantile
   - expr: histogram_quantile(0.50, sum(rate(cortex_query_frontend_retries_bucket[1m]))
-      by (le, cluster, job))
-    record: cluster_job:cortex_query_frontend_retries:50quantile
-  - expr: sum(rate(cortex_query_frontend_retries_sum[1m])) by (cluster, job) / sum(rate(cortex_query_frontend_retries_count[1m]))
-      by (cluster, job)
-    record: cluster_job:cortex_query_frontend_retries:avg
-  - expr: sum(rate(cortex_query_frontend_retries_bucket[1m])) by (le, cluster, job)
-    record: cluster_job:cortex_query_frontend_retries_bucket:sum_rate
-  - expr: sum(rate(cortex_query_frontend_retries_sum[1m])) by (cluster, job)
-    record: cluster_job:cortex_query_frontend_retries_sum:sum_rate
-  - expr: sum(rate(cortex_query_frontend_retries_count[1m])) by (cluster, job)
-    record: cluster_job:cortex_query_frontend_retries_count:sum_rate
+      by (le, cluster, app))
+    record: cluster_app:cortex_query_frontend_retries:50quantile
+  - expr: sum(rate(cortex_query_frontend_retries_sum[1m])) by (cluster, app) / sum(rate(cortex_query_frontend_retries_count[1m]))
+      by (cluster, app)
+    record: cluster_app:cortex_query_frontend_retries:avg
+  - expr: sum(rate(cortex_query_frontend_retries_bucket[1m])) by (le, cluster, app)
+    record: cluster_app:cortex_query_frontend_retries_bucket:sum_rate
+  - expr: sum(rate(cortex_query_frontend_retries_sum[1m])) by (cluster, app)
+    record: cluster_app:cortex_query_frontend_retries_sum:sum_rate
+  - expr: sum(rate(cortex_query_frontend_retries_count[1m])) by (cluster, app)
+    record: cluster_app:cortex_query_frontend_retries_count:sum_rate
   - expr: histogram_quantile(0.99, sum(rate(cortex_query_frontend_queue_duration_seconds_bucket[1m]))
-      by (le, cluster, job))
-    record: cluster_job:cortex_query_frontend_queue_duration_seconds:99quantile
+      by (le, cluster, app))
+    record: cluster_app:cortex_query_frontend_queue_duration_seconds:99quantile
   - expr: histogram_quantile(0.50, sum(rate(cortex_query_frontend_queue_duration_seconds_bucket[1m]))
-      by (le, cluster, job))
-    record: cluster_job:cortex_query_frontend_queue_duration_seconds:50quantile
+      by (le, cluster, app))
+    record: cluster_app:cortex_query_frontend_queue_duration_seconds:50quantile
   - expr: sum(rate(cortex_query_frontend_queue_duration_seconds_sum[1m])) by (cluster,
-      job) / sum(rate(cortex_query_frontend_queue_duration_seconds_count[1m])) by
-      (cluster, job)
-    record: cluster_job:cortex_query_frontend_queue_duration_seconds:avg
+      app) / sum(rate(cortex_query_frontend_queue_duration_seconds_count[1m])) by
+      (cluster, app)
+    record: cluster_app:cortex_query_frontend_queue_duration_seconds:avg
   - expr: sum(rate(cortex_query_frontend_queue_duration_seconds_bucket[1m])) by (le,
-      cluster, job)
-    record: cluster_job:cortex_query_frontend_queue_duration_seconds_bucket:sum_rate
+      cluster, app)
+    record: cluster_app:cortex_query_frontend_queue_duration_seconds_bucket:sum_rate
   - expr: sum(rate(cortex_query_frontend_queue_duration_seconds_sum[1m])) by (cluster,
-      job)
-    record: cluster_job:cortex_query_frontend_queue_duration_seconds_sum:sum_rate
+      app)
+    record: cluster_app:cortex_query_frontend_queue_duration_seconds_sum:sum_rate
   - expr: sum(rate(cortex_query_frontend_queue_duration_seconds_count[1m])) by (cluster,
-      job)
-    record: cluster_job:cortex_query_frontend_queue_duration_seconds_count:sum_rate
+      app)
+    record: cluster_app:cortex_query_frontend_queue_duration_seconds_count:sum_rate
 - name: mimir_ingester_queries
   rules:
   - expr: histogram_quantile(0.99, sum(rate(cortex_ingester_queried_series_bucket[1m]))
-      by (le, cluster, job))
-    record: cluster_job:cortex_ingester_queried_series:99quantile
+      by (le, cluster, app))
+    record: cluster_app:cortex_ingester_queried_series:99quantile
   - expr: histogram_quantile(0.50, sum(rate(cortex_ingester_queried_series_bucket[1m]))
-      by (le, cluster, job))
-    record: cluster_job:cortex_ingester_queried_series:50quantile
-  - expr: sum(rate(cortex_ingester_queried_series_sum[1m])) by (cluster, job) / sum(rate(cortex_ingester_queried_series_count[1m]))
-      by (cluster, job)
-    record: cluster_job:cortex_ingester_queried_series:avg
-  - expr: sum(rate(cortex_ingester_queried_series_bucket[1m])) by (le, cluster, job)
-    record: cluster_job:cortex_ingester_queried_series_bucket:sum_rate
-  - expr: sum(rate(cortex_ingester_queried_series_sum[1m])) by (cluster, job)
-    record: cluster_job:cortex_ingester_queried_series_sum:sum_rate
-  - expr: sum(rate(cortex_ingester_queried_series_count[1m])) by (cluster, job)
-    record: cluster_job:cortex_ingester_queried_series_count:sum_rate
+      by (le, cluster, app))
+    record: cluster_app:cortex_ingester_queried_series:50quantile
+  - expr: sum(rate(cortex_ingester_queried_series_sum[1m])) by (cluster, app) / sum(rate(cortex_ingester_queried_series_count[1m]))
+      by (cluster, app)
+    record: cluster_app:cortex_ingester_queried_series:avg
+  - expr: sum(rate(cortex_ingester_queried_series_bucket[1m])) by (le, cluster, app)
+    record: cluster_app:cortex_ingester_queried_series_bucket:sum_rate
+  - expr: sum(rate(cortex_ingester_queried_series_sum[1m])) by (cluster, app)
+    record: cluster_app:cortex_ingester_queried_series_sum:sum_rate
+  - expr: sum(rate(cortex_ingester_queried_series_count[1m])) by (cluster, app)
+    record: cluster_app:cortex_ingester_queried_series_count:sum_rate
   - expr: histogram_quantile(0.99, sum(rate(cortex_ingester_queried_samples_bucket[1m]))
-      by (le, cluster, job))
-    record: cluster_job:cortex_ingester_queried_samples:99quantile
+      by (le, cluster, app))
+    record: cluster_app:cortex_ingester_queried_samples:99quantile
   - expr: histogram_quantile(0.50, sum(rate(cortex_ingester_queried_samples_bucket[1m]))
-      by (le, cluster, job))
-    record: cluster_job:cortex_ingester_queried_samples:50quantile
-  - expr: sum(rate(cortex_ingester_queried_samples_sum[1m])) by (cluster, job) / sum(rate(cortex_ingester_queried_samples_count[1m]))
-      by (cluster, job)
-    record: cluster_job:cortex_ingester_queried_samples:avg
-  - expr: sum(rate(cortex_ingester_queried_samples_bucket[1m])) by (le, cluster, job)
-    record: cluster_job:cortex_ingester_queried_samples_bucket:sum_rate
-  - expr: sum(rate(cortex_ingester_queried_samples_sum[1m])) by (cluster, job)
-    record: cluster_job:cortex_ingester_queried_samples_sum:sum_rate
-  - expr: sum(rate(cortex_ingester_queried_samples_count[1m])) by (cluster, job)
-    record: cluster_job:cortex_ingester_queried_samples_count:sum_rate
+      by (le, cluster, app))
+    record: cluster_app:cortex_ingester_queried_samples:50quantile
+  - expr: sum(rate(cortex_ingester_queried_samples_sum[1m])) by (cluster, app) / sum(rate(cortex_ingester_queried_samples_count[1m]))
+      by (cluster, app)
+    record: cluster_app:cortex_ingester_queried_samples:avg
+  - expr: sum(rate(cortex_ingester_queried_samples_bucket[1m])) by (le, cluster, app)
+    record: cluster_app:cortex_ingester_queried_samples_bucket:sum_rate
+  - expr: sum(rate(cortex_ingester_queried_samples_sum[1m])) by (cluster, app)
+    record: cluster_app:cortex_ingester_queried_samples_sum:sum_rate
+  - expr: sum(rate(cortex_ingester_queried_samples_count[1m])) by (cluster, app)
+    record: cluster_app:cortex_ingester_queried_samples_count:sum_rate
   - expr: histogram_quantile(0.99, sum(rate(cortex_ingester_queried_exemplars_bucket[1m]))
-      by (le, cluster, job))
-    record: cluster_job:cortex_ingester_queried_exemplars:99quantile
+      by (le, cluster, app))
+    record: cluster_app:cortex_ingester_queried_exemplars:99quantile
   - expr: histogram_quantile(0.50, sum(rate(cortex_ingester_queried_exemplars_bucket[1m]))
-      by (le, cluster, job))
-    record: cluster_job:cortex_ingester_queried_exemplars:50quantile
-  - expr: sum(rate(cortex_ingester_queried_exemplars_sum[1m])) by (cluster, job) /
-      sum(rate(cortex_ingester_queried_exemplars_count[1m])) by (cluster, job)
-    record: cluster_job:cortex_ingester_queried_exemplars:avg
+      by (le, cluster, app))
+    record: cluster_app:cortex_ingester_queried_exemplars:50quantile
+  - expr: sum(rate(cortex_ingester_queried_exemplars_sum[1m])) by (cluster, app) /
+      sum(rate(cortex_ingester_queried_exemplars_count[1m])) by (cluster, app)
+    record: cluster_app:cortex_ingester_queried_exemplars:avg
   - expr: sum(rate(cortex_ingester_queried_exemplars_bucket[1m])) by (le, cluster,
-      job)
-    record: cluster_job:cortex_ingester_queried_exemplars_bucket:sum_rate
-  - expr: sum(rate(cortex_ingester_queried_exemplars_sum[1m])) by (cluster, job)
-    record: cluster_job:cortex_ingester_queried_exemplars_sum:sum_rate
-  - expr: sum(rate(cortex_ingester_queried_exemplars_count[1m])) by (cluster, job)
-    record: cluster_job:cortex_ingester_queried_exemplars_count:sum_rate
+      app)
+    record: cluster_app:cortex_ingester_queried_exemplars_bucket:sum_rate
+  - expr: sum(rate(cortex_ingester_queried_exemplars_sum[1m])) by (cluster, app)
+    record: cluster_app:cortex_ingester_queried_exemplars_sum:sum_rate
+  - expr: sum(rate(cortex_ingester_queried_exemplars_count[1m])) by (cluster, app)
+    record: cluster_app:cortex_ingester_queried_exemplars_count:sum_rate
 - name: mimir_received_samples
   rules:
   - expr: |
-      sum by (cluster, namespace, job) (rate(cortex_distributor_received_samples_total[5m]))
-    record: cluster_namespace_job:cortex_distributor_received_samples:rate5m
+      sum by (cluster, namespace, app) (rate(cortex_distributor_received_samples_total[5m]))
+    record: cluster_namespace_app:cortex_distributor_received_samples:rate5m
 - name: mimir_exemplars_in
   rules:
   - expr: |
-      sum by (cluster, namespace, job) (rate(cortex_distributor_exemplars_in_total[5m]))
-    record: cluster_namespace_job:cortex_distributor_exemplars_in:rate5m
+      sum by (cluster, namespace, app) (rate(cortex_distributor_exemplars_in_total[5m]))
+    record: cluster_namespace_app:cortex_distributor_exemplars_in:rate5m
 - name: mimir_received_exemplars
   rules:
   - expr: |
-      sum by (cluster, namespace, job) (rate(cortex_distributor_received_exemplars_total[5m]))
-    record: cluster_namespace_job:cortex_distributor_received_exemplars:rate5m
+      sum by (cluster, namespace, app) (rate(cortex_distributor_received_exemplars_total[5m]))
+    record: cluster_namespace_app:cortex_distributor_received_exemplars:rate5m
 - name: mimir_exemplars_ingested
   rules:
   - expr: |
-      sum by (cluster, namespace, job) (rate(cortex_ingester_ingested_exemplars_total[5m]))
-    record: cluster_namespace_job:cortex_ingester_ingested_exemplars:rate5m
+      sum by (cluster, namespace, app) (rate(cortex_ingester_ingested_exemplars_total[5m]))
+    record: cluster_namespace_app:cortex_ingester_ingested_exemplars:rate5m
 - name: mimir_exemplars_appended
   rules:
   - expr: |
-      sum by (cluster, namespace, job) (rate(cortex_ingester_tsdb_exemplar_exemplars_appended_total[5m]))
-    record: cluster_namespace_job:cortex_ingester_tsdb_exemplar_exemplars_appended:rate5m
+      sum by (cluster, namespace, app) (rate(cortex_ingester_tsdb_exemplar_exemplars_appended_total[5m]))
+    record: cluster_namespace_app:cortex_ingester_tsdb_exemplar_exemplars_appended:rate5m
 - name: mimir_scaling_rules
   rules:
   - expr: |
@@ -320,7 +320,7 @@ groups:
       ceil(
         quantile_over_time(0.99,
           sum by (cluster, namespace) (
-            cluster_namespace_job:cortex_distributor_received_samples:rate5m
+            cluster_namespace_app:cortex_distributor_received_samples:rate5m
           )[24h:]
         )
         / 240000
@@ -342,7 +342,7 @@ groups:
       ceil(
         quantile_over_time(0.99,
           sum by (cluster, namespace) (
-            cluster_namespace_job:cortex_distributor_received_samples:rate5m
+            cluster_namespace_app:cortex_distributor_received_samples:rate5m
           )[24h:]
         )
         * 3 / 80000
@@ -385,11 +385,11 @@ groups:
   - expr: |
       ceil(
         (sum by (cluster, namespace) (
-          cortex_ingester_tsdb_storage_blocks_bytes{job=~".+/ingester.*"}
+          cortex_ingester_tsdb_storage_blocks_bytes{app=~".+/ingester.*"}
         ) / 4)
           /
         avg by (cluster, namespace) (
-          memcached_limit_bytes{job=~".+/memcached"}
+          memcached_limit_bytes{app=~".+/memcached"}
         )
       )
     labels:
@@ -450,7 +450,7 @@ groups:
       )
     record: cluster_namespace_deployment:kube_pod_container_resource_requests_cpu_cores:sum
   - expr: |
-      # Jobs should be sized to their CPU usage.
+      # apps should be sized to their CPU usage.
       # We do this by comparing 99th percentile usage over the last 24hrs to
       # their current provisioned #replicas and resource requests.
       ceil(
@@ -519,7 +519,7 @@ groups:
       )
     record: cluster_namespace_deployment:kube_pod_container_resource_requests_memory_bytes:sum
   - expr: |
-      # Jobs should be sized to their Memory usage.
+      # apps should be sized to their Memory usage.
       # We do this by comparing 99th percentile usage over the last 24hrs to
       # their current provisioned #replicas and resource requests.
       ceil(
@@ -535,35 +535,35 @@ groups:
 - name: mimir_alertmanager_rules
   rules:
   - expr: |
-      sum by (cluster, job, pod) (cortex_alertmanager_alerts)
-    record: cluster_job_pod:cortex_alertmanager_alerts:sum
+      sum by (cluster, app, pod) (cortex_alertmanager_alerts)
+    record: cluster_app_pod:cortex_alertmanager_alerts:sum
   - expr: |
-      sum by (cluster, job, pod) (cortex_alertmanager_silences)
-    record: cluster_job_pod:cortex_alertmanager_silences:sum
+      sum by (cluster, app, pod) (cortex_alertmanager_silences)
+    record: cluster_app_pod:cortex_alertmanager_silences:sum
   - expr: |
-      sum by (cluster, job) (rate(cortex_alertmanager_alerts_received_total[5m]))
-    record: cluster_job:cortex_alertmanager_alerts_received_total:rate5m
+      sum by (cluster, app) (rate(cortex_alertmanager_alerts_received_total[5m]))
+    record: cluster_app:cortex_alertmanager_alerts_received_total:rate5m
   - expr: |
-      sum by (cluster, job) (rate(cortex_alertmanager_alerts_invalid_total[5m]))
-    record: cluster_job:cortex_alertmanager_alerts_invalid_total:rate5m
+      sum by (cluster, app) (rate(cortex_alertmanager_alerts_invalid_total[5m]))
+    record: cluster_app:cortex_alertmanager_alerts_invalid_total:rate5m
   - expr: |
-      sum by (cluster, job, integration) (rate(cortex_alertmanager_notifications_total[5m]))
-    record: cluster_job_integration:cortex_alertmanager_notifications_total:rate5m
+      sum by (cluster, app, integration) (rate(cortex_alertmanager_notifications_total[5m]))
+    record: cluster_app_integration:cortex_alertmanager_notifications_total:rate5m
   - expr: |
-      sum by (cluster, job, integration) (rate(cortex_alertmanager_notifications_failed_total[5m]))
-    record: cluster_job_integration:cortex_alertmanager_notifications_failed_total:rate5m
+      sum by (cluster, app, integration) (rate(cortex_alertmanager_notifications_failed_total[5m]))
+    record: cluster_app_integration:cortex_alertmanager_notifications_failed_total:rate5m
   - expr: |
-      sum by (cluster, job) (rate(cortex_alertmanager_state_replication_total[5m]))
-    record: cluster_job:cortex_alertmanager_state_replication_total:rate5m
+      sum by (cluster, app) (rate(cortex_alertmanager_state_replication_total[5m]))
+    record: cluster_app:cortex_alertmanager_state_replication_total:rate5m
   - expr: |
-      sum by (cluster, job) (rate(cortex_alertmanager_state_replication_failed_total[5m]))
-    record: cluster_job:cortex_alertmanager_state_replication_failed_total:rate5m
+      sum by (cluster, app) (rate(cortex_alertmanager_state_replication_failed_total[5m]))
+    record: cluster_app:cortex_alertmanager_state_replication_failed_total:rate5m
   - expr: |
-      sum by (cluster, job) (rate(cortex_alertmanager_partial_state_merges_total[5m]))
-    record: cluster_job:cortex_alertmanager_partial_state_merges_total:rate5m
+      sum by (cluster, app) (rate(cortex_alertmanager_partial_state_merges_total[5m]))
+    record: cluster_app:cortex_alertmanager_partial_state_merges_total:rate5m
   - expr: |
-      sum by (cluster, job) (rate(cortex_alertmanager_partial_state_merges_failed_total[5m]))
-    record: cluster_job:cortex_alertmanager_partial_state_merges_failed_total:rate5m
+      sum by (cluster, app) (rate(cortex_alertmanager_partial_state_merges_failed_total[5m]))
+    record: cluster_app:cortex_alertmanager_partial_state_merges_failed_total:rate5m
 - name: mimir_ingester_rules
   rules:
   - expr: |

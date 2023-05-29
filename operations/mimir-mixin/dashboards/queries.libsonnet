@@ -9,24 +9,24 @@ local filename = 'mimir-queries.json';
       $.row('Query-frontend')
       .addPanel(
         $.panel('Queue duration') +
-        $.latencyPanel('cortex_query_frontend_queue_duration_seconds', '{%s}' % $.jobMatcher($._config.job_names.query_frontend)),
+        $.latencyPanel('cortex_query_frontend_queue_duration_seconds', '{%s}' % $.appMatcher($._config.app_names.query_frontend)),
       )
       .addPanel(
         $.panel('Retries') +
-        $.latencyPanel('cortex_query_frontend_retries', '{%s}' % $.jobMatcher($._config.job_names.query_frontend), multiplier=1) +
+        $.latencyPanel('cortex_query_frontend_retries', '{%s}' % $.appMatcher($._config.app_names.query_frontend), multiplier=1) +
         { yaxes: $.yaxes('short') },
       )
       .addPanel(
         $.panel('Queue length (per %s)' % $._config.per_instance_label) +
         $.queryPanel(
-          'sum by(%s) (cortex_query_frontend_queue_length{%s})' % [$._config.per_instance_label, $.jobMatcher($._config.job_names.query_frontend)],
+          'sum by(%s) (cortex_query_frontend_queue_length{%s})' % [$._config.per_instance_label, $.appMatcher($._config.app_names.query_frontend)],
           '{{%s}}' % $._config.per_instance_label
         ),
       )
       .addPanel(
         $.panel('Queue length (per user)') +
         $.queryPanel(
-          'sum by(user) (cortex_query_frontend_queue_length{%s}) > 0' % [$.jobMatcher($._config.job_names.query_frontend)],
+          'sum by(user) (cortex_query_frontend_queue_length{%s}) > 0' % [$.appMatcher($._config.app_names.query_frontend)],
           '{{user}}'
         ),
       )
@@ -35,19 +35,19 @@ local filename = 'mimir-queries.json';
       $.row('Query-scheduler')
       .addPanel(
         $.panel('Queue duration') +
-        $.latencyPanel('cortex_query_scheduler_queue_duration_seconds', '{%s}' % $.jobMatcher($._config.job_names.query_scheduler)),
+        $.latencyPanel('cortex_query_scheduler_queue_duration_seconds', '{%s}' % $.appMatcher($._config.app_names.query_scheduler)),
       )
       .addPanel(
         $.panel('Queue length (per %s)' % $._config.per_instance_label) +
         $.queryPanel(
-          'sum by(%s) (cortex_query_scheduler_queue_length{%s})' % [$._config.per_instance_label, $.jobMatcher($._config.job_names.query_scheduler)],
+          'sum by(%s) (cortex_query_scheduler_queue_length{%s})' % [$._config.per_instance_label, $.appMatcher($._config.app_names.query_scheduler)],
           '{{%s}}' % $._config.per_instance_label
         ),
       )
       .addPanel(
         $.panel('Queue length (per user)') +
         $.queryPanel(
-          'sum by(user) (cortex_query_scheduler_queue_length{%s}) > 0' % [$.jobMatcher($._config.job_names.query_scheduler)],
+          'sum by(user) (cortex_query_scheduler_queue_length{%s}) > 0' % [$.appMatcher($._config.app_names.query_scheduler)],
           '{{user}}'
         ),
       )
@@ -56,7 +56,7 @@ local filename = 'mimir-queries.json';
       $.row('Query-frontend - query splitting and results cache')
       .addPanel(
         $.panel('Intervals per query') +
-        $.queryPanel('sum(rate(cortex_frontend_split_queries_total{%s}[$__rate_interval])) / sum(rate(cortex_frontend_query_range_duration_seconds_count{%s, method="split_by_interval_and_results_cache"}[$__rate_interval]))' % [$.jobMatcher($._config.job_names.query_frontend), $.jobMatcher($._config.job_names.query_frontend)], 'splitting rate') +
+        $.queryPanel('sum(rate(cortex_frontend_split_queries_total{%s}[$__rate_interval])) / sum(rate(cortex_frontend_query_range_duration_seconds_count{%s, method="split_by_interval_and_results_cache"}[$__rate_interval]))' % [$.appMatcher($._config.app_names.query_frontend), $.appMatcher($._config.app_names.query_frontend)], 'splitting rate') +
         $.panelDescription(
           'Intervals per query',
           |||
@@ -81,7 +81,7 @@ local filename = 'mimir-queries.json';
               rate(thanos_cache_memcached_requests_total{name=~"frontend-cache", %(frontend)s}[$__rate_interval])
             )
           ||| % {
-            frontend: $.jobMatcher($._config.job_names.query_frontend),
+            frontend: $.appMatcher($._config.app_names.query_frontend),
           },
           'Hit ratio',
         ) +
@@ -104,7 +104,7 @@ local filename = 'mimir-queries.json';
               rate(thanos_cache_memcached_hits_total{name=~"frontend-cache", %(frontend)s}[$__rate_interval])
             )
           ||| % {
-            frontend: $.jobMatcher($._config.job_names.query_frontend),
+            frontend: $.appMatcher($._config.app_names.query_frontend),
           },
           'Missed query results per second'
         ),
@@ -114,7 +114,7 @@ local filename = 'mimir-queries.json';
         $.queryPanel(|||
           sum(rate(cortex_frontend_query_result_cache_skipped_total{%s}[$__rate_interval])) by (reason) /
           ignoring (reason) group_left sum(rate(cortex_frontend_query_result_cache_attempted_total{%s}[$__rate_interval]))
-        ||| % [$.jobMatcher($._config.job_names.query_frontend), $.jobMatcher($._config.job_names.query_frontend)], '{{reason}}') +
+        ||| % [$.appMatcher($._config.app_names.query_frontend), $.appMatcher($._config.app_names.query_frontend)], '{{reason}}') +
         { yaxes: $.yaxes({ format: 'percentunit', max: 1 }) } +
         $.stack +
         $.panelDescription(
@@ -133,7 +133,7 @@ local filename = 'mimir-queries.json';
         $.queryPanel(|||
           sum(rate(cortex_frontend_query_sharding_rewrites_succeeded_total{%s}[$__rate_interval])) /
           sum(rate(cortex_frontend_query_sharding_rewrites_attempted_total{%s}[$__rate_interval]))
-        ||| % [$.jobMatcher($._config.job_names.query_frontend), $.jobMatcher($._config.job_names.query_frontend)], 'sharded queries ratio') +
+        ||| % [$.appMatcher($._config.app_names.query_frontend), $.appMatcher($._config.app_names.query_frontend)], 'sharded queries ratio') +
         { yaxes: $.yaxes({ format: 'percentunit', max: 1 }) } +
         $.panelDescription(
           'Sharded queries ratio',
@@ -145,7 +145,7 @@ local filename = 'mimir-queries.json';
       )
       .addPanel(
         $.panel('Number of sharded queries per query') +
-        $.latencyPanel('cortex_frontend_sharded_queries_per_query', '{%s}' % $.jobMatcher($._config.job_names.query_frontend), multiplier=1) +
+        $.latencyPanel('cortex_frontend_sharded_queries_per_query', '{%s}' % $.appMatcher($._config.app_names.query_frontend), multiplier=1) +
         { yaxes: $.yaxes('short') } +
         $.panelDescription(
           'Number of sharded queries per query',
@@ -160,17 +160,17 @@ local filename = 'mimir-queries.json';
       $.row('Ingester')
       .addPanel(
         $.panel('Series per query') +
-        utils.latencyRecordingRulePanel('cortex_ingester_queried_series', $.jobSelector($._config.job_names.ingester), multiplier=1) +
+        utils.latencyRecordingRulePanel('cortex_ingester_queried_series', $.appSelector($._config.app_names.ingester), multiplier=1) +
         { yaxes: $.yaxes('short') },
       )
       .addPanel(
         $.panel('Samples per query') +
-        utils.latencyRecordingRulePanel('cortex_ingester_queried_samples', $.jobSelector($._config.job_names.ingester), multiplier=1) +
+        utils.latencyRecordingRulePanel('cortex_ingester_queried_samples', $.appSelector($._config.app_names.ingester), multiplier=1) +
         { yaxes: $.yaxes('short') },
       )
       .addPanel(
         $.panel('Exemplars per query') +
-        utils.latencyRecordingRulePanel('cortex_ingester_queried_exemplars', $.jobSelector($._config.job_names.ingester), multiplier=1) +
+        utils.latencyRecordingRulePanel('cortex_ingester_queried_exemplars', $.appSelector($._config.app_names.ingester), multiplier=1) +
         { yaxes: $.yaxes('short') },
       )
     )
@@ -178,17 +178,17 @@ local filename = 'mimir-queries.json';
       $.row('Querier')
       .addPanel(
         $.panel('Number of store-gateways hit per query') +
-        $.latencyPanel('cortex_querier_storegateway_instances_hit_per_query', '{%s}' % $.jobMatcher($._config.job_names.querier), multiplier=1) +
+        $.latencyPanel('cortex_querier_storegateway_instances_hit_per_query', '{%s}' % $.appMatcher($._config.app_names.querier), multiplier=1) +
         { yaxes: $.yaxes('short') },
       )
       .addPanel(
         $.panel('Refetches of missing blocks per query') +
-        $.latencyPanel('cortex_querier_storegateway_refetches_per_query', '{%s}' % $.jobMatcher($._config.job_names.querier), multiplier=1) +
+        $.latencyPanel('cortex_querier_storegateway_refetches_per_query', '{%s}' % $.appMatcher($._config.app_names.querier), multiplier=1) +
         { yaxes: $.yaxes('short') },
       )
       .addPanel(
         $.panel('Consistency checks failed') +
-        $.failurePanel('sum(rate(cortex_querier_blocks_consistency_checks_failed_total{%s}[$__rate_interval])) / sum(rate(cortex_querier_blocks_consistency_checks_total{%s}[$__rate_interval]))' % [$.jobMatcher($._config.job_names.querier), $.jobMatcher($._config.job_names.querier)], 'Failure Rate') +
+        $.failurePanel('sum(rate(cortex_querier_blocks_consistency_checks_failed_total{%s}[$__rate_interval])) / sum(rate(cortex_querier_blocks_consistency_checks_total{%s}[$__rate_interval]))' % [$.appMatcher($._config.app_names.querier), $.appMatcher($._config.app_names.querier)], 'Failure Rate') +
         { yaxes: $.yaxes({ format: 'percentunit', max: 1 }) },
       )
     )
@@ -197,30 +197,30 @@ local filename = 'mimir-queries.json';
       .addPanel(
         $.panel('Bucket indexes loaded (per querier)') +
         $.queryPanel([
-          'max(cortex_bucket_index_loaded{%s})' % $.jobMatcher($._config.job_names.querier),
-          'min(cortex_bucket_index_loaded{%s})' % $.jobMatcher($._config.job_names.querier),
-          'avg(cortex_bucket_index_loaded{%s})' % $.jobMatcher($._config.job_names.querier),
+          'max(cortex_bucket_index_loaded{%s})' % $.appMatcher($._config.app_names.querier),
+          'min(cortex_bucket_index_loaded{%s})' % $.appMatcher($._config.app_names.querier),
+          'avg(cortex_bucket_index_loaded{%s})' % $.appMatcher($._config.app_names.querier),
         ], ['Max', 'Min', 'Average']) +
         { yaxes: $.yaxes('short') },
       )
       .addPanel(
         $.panel('Bucket indexes load / sec') +
         $.successFailurePanel(
-          'sum(rate(cortex_bucket_index_loads_total{%s}[$__rate_interval])) - sum(rate(cortex_bucket_index_load_failures_total{%s}[$__rate_interval]))' % [$.jobMatcher($._config.job_names.querier), $.jobMatcher($._config.job_names.querier)],
-          'sum(rate(cortex_bucket_index_load_failures_total{%s}[$__rate_interval]))' % $.jobMatcher($._config.job_names.querier),
+          'sum(rate(cortex_bucket_index_loads_total{%s}[$__rate_interval])) - sum(rate(cortex_bucket_index_load_failures_total{%s}[$__rate_interval]))' % [$.appMatcher($._config.app_names.querier), $.appMatcher($._config.app_names.querier)],
+          'sum(rate(cortex_bucket_index_load_failures_total{%s}[$__rate_interval]))' % $.appMatcher($._config.app_names.querier),
         ) +
         $.stack
       )
       .addPanel(
         $.panel('Bucket indexes load latency') +
-        $.latencyPanel('cortex_bucket_index_load_duration_seconds', '{%s}' % $.jobMatcher($._config.job_names.querier)),
+        $.latencyPanel('cortex_bucket_index_load_duration_seconds', '{%s}' % $.appMatcher($._config.app_names.querier)),
       )
     )
     .addRow(
       $.row('Store-gateway')
       .addPanel(
         $.panel('Blocks queried / sec') +
-        $.queryPanel('sum(rate(cortex_bucket_store_series_blocks_queried_sum{component="store-gateway",%s}[$__rate_interval]))' % $.jobMatcher($._config.job_names.store_gateway), 'blocks') +
+        $.queryPanel('sum(rate(cortex_bucket_store_series_blocks_queried_sum{component="store-gateway",%s}[$__rate_interval]))' % $.appMatcher($._config.app_names.store_gateway), 'blocks') +
         { yaxes: $.yaxes('ops') },
       )
       .addPanel(
@@ -228,9 +228,9 @@ local filename = 'mimir-queries.json';
         $.queryPanel(|||
           sum by(data_type) (
             # Exclude "chunks refetched".
-            rate(cortex_bucket_store_series_data_size_fetched_bytes_sum{component="store-gateway", stage!="refetched", %(jobMatcher)s}[$__rate_interval])
+            rate(cortex_bucket_store_series_data_size_fetched_bytes_sum{component="store-gateway", stage!="refetched", %(appMatcher)s}[$__rate_interval])
           )
-        ||| % { jobMatcher: $.jobMatcher($._config.job_names.store_gateway) }, '{{data_type}}') +
+        ||| % { appMatcher: $.appMatcher($._config.app_names.store_gateway) }, '{{data_type}}') +
         $.stack +
         { yaxes: $.yaxes('binBps') },
       )
@@ -239,9 +239,9 @@ local filename = 'mimir-queries.json';
         $.queryPanel(|||
           sum by(data_type) (
             # Exclude "chunks processed" to only count "chunks returned", other than postings and series.
-            rate(cortex_bucket_store_series_data_size_touched_bytes_sum{component="store-gateway", stage!="processed",%(jobMatcher)s}[$__rate_interval])
+            rate(cortex_bucket_store_series_data_size_touched_bytes_sum{component="store-gateway", stage!="processed",%(appMatcher)s}[$__rate_interval])
           )
-        ||| % { jobMatcher: $.jobMatcher($._config.job_names.store_gateway) }, '{{data_type}}') +
+        ||| % { appMatcher: $.appMatcher($._config.app_names.store_gateway) }, '{{data_type}}') +
         $.stack +
         { yaxes: $.yaxes('binBps') },
       )
@@ -255,7 +255,7 @@ local filename = 'mimir-queries.json';
             sum by(stage) (rate(cortex_bucket_store_series_request_stage_duration_seconds_sum{%s}[$__rate_interval]))
             /
             sum by(stage) (rate(cortex_bucket_store_series_request_stage_duration_seconds_count{%s}[$__rate_interval]))
-          ||| % [$.jobMatcher($._config.job_names.store_gateway), $.jobMatcher($._config.job_names.store_gateway)],
+          ||| % [$.appMatcher($._config.app_names.store_gateway), $.appMatcher($._config.app_names.store_gateway)],
           '{{stage}}'
         ) +
         $.stack +
@@ -266,7 +266,7 @@ local filename = 'mimir-queries.json';
         $.queryPanel(
           |||
             histogram_quantile(0.99, sum by(stage, le) (rate(cortex_bucket_store_series_request_stage_duration_seconds_bucket{%s}[$__rate_interval])))
-          ||| % [$.jobMatcher($._config.job_names.store_gateway)],
+          ||| % [$.appMatcher($._config.app_names.store_gateway)],
           '{{stage}}'
         ) +
         $.stack +
@@ -283,7 +283,7 @@ local filename = 'mimir-queries.json';
                 /
                 sum(rate(cortex_bucket_store_series_batch_preloading_load_duration_seconds_sum{%s}[$__rate_interval]))
             ), 0)
-          ||| % [$.jobMatcher($._config.job_names.store_gateway), $.jobMatcher($._config.job_names.store_gateway)],
+          ||| % [$.appMatcher($._config.app_names.store_gateway), $.appMatcher($._config.app_names.store_gateway)],
           '% of time reduced by preloading'
         ) +
         { yaxes: $.yaxes({ format: 'percentunit', max: 1 }) } +
@@ -301,22 +301,22 @@ local filename = 'mimir-queries.json';
       $.row('')
       .addPanel(
         $.panel('Blocks currently loaded') +
-        $.queryPanel('cortex_bucket_store_blocks_loaded{component="store-gateway",%s}' % $.jobMatcher($._config.job_names.store_gateway), '{{%s}}' % $._config.per_instance_label) +
+        $.queryPanel('cortex_bucket_store_blocks_loaded{component="store-gateway",%s}' % $.appMatcher($._config.app_names.store_gateway), '{{%s}}' % $._config.per_instance_label) +
         { fill: 0 }
       )
       .addPanel(
         $.panel('Blocks loaded / sec') +
         $.successFailurePanel(
-          'sum(rate(cortex_bucket_store_block_loads_total{component="store-gateway",%s}[$__rate_interval])) - sum(rate(cortex_bucket_store_block_load_failures_total{component="store-gateway",%s}[$__rate_interval]))' % [$.jobMatcher($._config.job_names.store_gateway), $.jobMatcher($._config.job_names.store_gateway)],
-          'sum(rate(cortex_bucket_store_block_load_failures_total{component="store-gateway",%s}[$__rate_interval]))' % $.jobMatcher($._config.job_names.store_gateway),
+          'sum(rate(cortex_bucket_store_block_loads_total{component="store-gateway",%s}[$__rate_interval])) - sum(rate(cortex_bucket_store_block_load_failures_total{component="store-gateway",%s}[$__rate_interval]))' % [$.appMatcher($._config.app_names.store_gateway), $.appMatcher($._config.app_names.store_gateway)],
+          'sum(rate(cortex_bucket_store_block_load_failures_total{component="store-gateway",%s}[$__rate_interval]))' % $.appMatcher($._config.app_names.store_gateway),
         ) +
         $.stack
       )
       .addPanel(
         $.panel('Blocks dropped / sec') +
         $.successFailurePanel(
-          'sum(rate(cortex_bucket_store_block_drops_total{component="store-gateway",%s}[$__rate_interval])) - sum(rate(cortex_bucket_store_block_drop_failures_total{component="store-gateway",%s}[$__rate_interval]))' % [$.jobMatcher($._config.job_names.store_gateway), $.jobMatcher($._config.job_names.store_gateway)],
-          'sum(rate(cortex_bucket_store_block_drop_failures_total{component="store-gateway",%s}[$__rate_interval]))' % $.jobMatcher($._config.job_names.store_gateway),
+          'sum(rate(cortex_bucket_store_block_drops_total{component="store-gateway",%s}[$__rate_interval])) - sum(rate(cortex_bucket_store_block_drop_failures_total{component="store-gateway",%s}[$__rate_interval]))' % [$.appMatcher($._config.app_names.store_gateway), $.appMatcher($._config.app_names.store_gateway)],
+          'sum(rate(cortex_bucket_store_block_drop_failures_total{component="store-gateway",%s}[$__rate_interval]))' % $.appMatcher($._config.app_names.store_gateway),
         ) +
         $.stack
       )
@@ -325,12 +325,12 @@ local filename = 'mimir-queries.json';
       $.row('')
       .addPanel(
         $.panel('Lazy loaded index-headers') +
-        $.queryPanel('cortex_bucket_store_indexheader_lazy_load_total{%s} - cortex_bucket_store_indexheader_lazy_unload_total{%s}' % [$.jobMatcher($._config.job_names.store_gateway), $.jobMatcher($._config.job_names.store_gateway)], '{{%s}}' % $._config.per_instance_label) +
+        $.queryPanel('cortex_bucket_store_indexheader_lazy_load_total{%s} - cortex_bucket_store_indexheader_lazy_unload_total{%s}' % [$.appMatcher($._config.app_names.store_gateway), $.appMatcher($._config.app_names.store_gateway)], '{{%s}}' % $._config.per_instance_label) +
         { fill: 0 }
       )
       .addPanel(
         $.panel('Index-header lazy load duration') +
-        $.latencyPanel('cortex_bucket_store_indexheader_lazy_load_duration_seconds', '{%s}' % $.jobMatcher($._config.job_names.store_gateway)),
+        $.latencyPanel('cortex_bucket_store_indexheader_lazy_load_duration_seconds', '{%s}' % $.appMatcher($._config.app_names.store_gateway)),
       )
     )
     .addRow(
@@ -341,7 +341,7 @@ local filename = 'mimir-queries.json';
           sum(rate(cortex_bucket_store_series_hash_cache_hits_total{%s}[$__rate_interval]))
           /
           sum(rate(cortex_bucket_store_series_hash_cache_requests_total{%s}[$__rate_interval]))
-        ||| % [$.jobMatcher($._config.job_names.store_gateway), $.jobMatcher($._config.job_names.store_gateway)], 'hit ratio') +
+        ||| % [$.appMatcher($._config.app_names.store_gateway), $.appMatcher($._config.app_names.store_gateway)], 'hit ratio') +
         { yaxes: $.yaxes({ format: 'percentunit', max: 1 }) },
       )
       .addPanel(
@@ -350,7 +350,7 @@ local filename = 'mimir-queries.json';
           sum(rate(thanos_store_index_cache_hits_total{item_type="ExpandedPostings",%s}[$__rate_interval]))
           /
           sum(rate(thanos_store_index_cache_requests_total{item_type="ExpandedPostings",%s}[$__rate_interval]))
-        ||| % [$.jobMatcher($._config.job_names.store_gateway), $.jobMatcher($._config.job_names.store_gateway)], 'hit ratio') +
+        ||| % [$.appMatcher($._config.app_names.store_gateway), $.appMatcher($._config.app_names.store_gateway)], 'hit ratio') +
         { yaxes: $.yaxes({ format: 'percentunit', max: 1 }) },
       )
       .addPanel(
@@ -359,7 +359,7 @@ local filename = 'mimir-queries.json';
           sum(rate(cortex_cache_memory_hits_total{name="chunks-attributes-cache",%s}[$__rate_interval]))
           /
           sum(rate(cortex_cache_memory_requests_total{name="chunks-attributes-cache",%s}[$__rate_interval]))
-        ||| % [$.jobMatcher($._config.job_names.store_gateway), $.jobMatcher($._config.job_names.store_gateway)], 'hit ratio') +
+        ||| % [$.appMatcher($._config.app_names.store_gateway), $.appMatcher($._config.app_names.store_gateway)], 'hit ratio') +
         { yaxes: $.yaxes({ format: 'percentunit', max: 1 }) },
       )
     ),

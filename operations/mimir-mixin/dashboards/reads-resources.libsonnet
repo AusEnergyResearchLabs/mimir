@@ -95,7 +95,7 @@ local filename = 'mimir-reads-resources.json';
       .addPanel(
         $.panel('Rules') +
         $.queryPanel(
-          'sum by(%s) (cortex_prometheus_rule_group_rules{%s})' % [$._config.per_instance_label, $.jobMatcher($._config.job_names.ruler)],
+          'sum by(%s) (cortex_prometheus_rule_group_rules{%s})' % [$._config.per_instance_label, $.appMatcher($._config.app_names.ruler)],
           '{{%s}}' % $._config.per_instance_label
         ),
       )

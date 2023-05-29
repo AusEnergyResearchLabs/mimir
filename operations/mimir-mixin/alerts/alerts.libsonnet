@@ -31,16 +31,16 @@ local utils = import 'mixin-utils/utils.libsonnet';
         },
         {
           alert: $.alertName('RequestErrors'),
-          // Note if alert_aggregation_labels is "job", this will repeat the label. But
+          // Note if alert_aggregation_labels is "app", this will repeat the label. But
           // prometheus seems to tolerate that.
           expr: |||
-            100 * sum by (%(group_by)s, %(job_label)s, route) (rate(cortex_request_duration_seconds_count{status_code=~"5..",route!~"%(excluded_routes)s"}[1m]))
+            100 * sum by (%(group_by)s, %(app_label)s, route) (rate(cortex_request_duration_seconds_count{status_code=~"5..",route!~"%(excluded_routes)s"}[1m]))
               /
-            sum by (%(group_by)s, %(job_label)s, route) (rate(cortex_request_duration_seconds_count{route!~"%(excluded_routes)s"}[1m]))
+            sum by (%(group_by)s, %(app_label)s, route) (rate(cortex_request_duration_seconds_count{route!~"%(excluded_routes)s"}[1m]))
               > 1
           ||| % {
             group_by: $._config.alert_aggregation_labels,
-            job_label: $._config.per_job_label,
+            app_label: $._config.per_app_label,
             excluded_routes: std.join('|', ['ready'] + $._config.alert_excluded_routes),
           },
           'for': '15m',
@@ -56,7 +56,7 @@ local utils = import 'mixin-utils/utils.libsonnet';
         {
           alert: $.alertName('RequestLatency'),
           expr: |||
-            %(group_prefix_jobs)s_route:cortex_request_duration_seconds:99quantile{route!~"%(excluded_routes)s"}
+            %(group_prefix_apps)s_route:cortex_request_duration_seconds:99quantile{route!~"%(excluded_routes)s"}
                >
             %(cortex_p99_latency_threshold_seconds)s
           ||| % $._config {
@@ -74,7 +74,7 @@ local utils = import 'mixin-utils/utils.libsonnet';
           },
           annotations: {
             message: |||
-              {{ $labels.%(per_job_label)s }} {{ $labels.route }} is experiencing {{ printf "%%.2f" $value }}s 99th percentile latency.
+              {{ $labels.%(per_app_label)s }} {{ $labels.route }} is experiencing {{ printf "%%.2f" $value }}s 99th percentile latency.
             ||| % $._config,
           },
         },
@@ -98,7 +98,7 @@ local utils = import 'mixin-utils/utils.libsonnet';
         {
           alert: $.alertName('InconsistentRuntimeConfig'),
           expr: |||
-            count(count by(%(alert_aggregation_labels)s, %(per_job_label)s, sha256) (cortex_runtime_config_hash)) without(sha256) > 1
+            count(count by(%(alert_aggregation_labels)s, %(per_app_label)s, sha256) (cortex_runtime_config_hash)) without(sha256) > 1
           ||| % $._config,
           'for': '1h',
           labels: {
@@ -123,14 +123,14 @@ local utils = import 'mixin-utils/utils.libsonnet';
           },
           annotations: {
             message: |||
-              {{ $labels.%(per_job_label)s }} failed to reload runtime config.
+              {{ $labels.%(per_app_label)s }} failed to reload runtime config.
             ||| % $._config,
           },
         },
         {
           alert: $.alertName('FrontendQueriesStuck'),
           expr: |||
-            sum by (%(alert_aggregation_labels)s, %(per_job_label)s) (min_over_time(cortex_query_frontend_queue_length[1m])) > 0
+            sum by (%(alert_aggregation_labels)s, %(per_app_label)s) (min_over_time(cortex_query_frontend_queue_length[1m])) > 0
           ||| % $._config,
           'for': '5m',  // We don't want to block for longer.
           labels: {
@@ -138,14 +138,14 @@ local utils = import 'mixin-utils/utils.libsonnet';
           },
           annotations: {
             message: |||
-              There are {{ $value }} queued up queries in %(alert_aggregation_variables)s {{ $labels.%(per_job_label)s }}.
+              There are {{ $value }} queued up queries in %(alert_aggregation_variables)s {{ $labels.%(per_app_label)s }}.
             ||| % $._config,
           },
         },
         {
           alert: $.alertName('SchedulerQueriesStuck'),
           expr: |||
-            sum by (%(alert_aggregation_labels)s, %(per_job_label)s) (min_over_time(cortex_query_scheduler_queue_length[1m])) > 0
+            sum by (%(alert_aggregation_labels)s, %(per_app_label)s) (min_over_time(cortex_query_scheduler_queue_length[1m])) > 0
           ||| % $._config,
           'for': '7m',  // We don't want to block for longer.
           labels: {
@@ -153,7 +153,7 @@ local utils = import 'mixin-utils/utils.libsonnet';
           },
           annotations: {
             message: |||
-              There are {{ $value }} queued up queries in %(alert_aggregation_variables)s {{ $labels.%(per_job_label)s }}.
+              There are {{ $value }} queued up queries in %(alert_aggregation_variables)s {{ $labels.%(per_app_label)s }}.
             ||| % $._config,
           },
         },
@@ -188,7 +188,7 @@ local utils = import 'mixin-utils/utils.libsonnet';
           alert: $.alertName('IngesterRestarts'),
           expr: |||
             changes(process_start_time_seconds{%s}[30m]) >= 2
-          ||| % $.jobMatcher($._config.job_names.ingester),
+          ||| % $.appMatcher($._config.app_names.ingester),
           labels: {
             // This alert is on a cause not symptom. A couple of ingesters restarts may be suspicious but
             // not necessarily an issue (eg. may happen because of the K8S node autoscaler), so we're
@@ -196,7 +196,7 @@ local utils = import 'mixin-utils/utils.libsonnet';
             severity: 'warning',
           },
           annotations: {
-            message: '{{ $labels.%(per_job_label)s }}/%(alert_instance_variable)s has restarted {{ printf "%%.2f" $value }} times in the last 30 mins.' % $._config,
+            message: '{{ $labels.%(per_app_label)s }}/%(alert_instance_variable)s has restarted {{ printf "%%.2f" $value }} times in the last 30 mins.' % $._config,
           },
         },
         {
@@ -223,14 +223,14 @@ local utils = import 'mixin-utils/utils.libsonnet';
         {
           alert: $.alertName('MemoryMapAreasTooHigh'),
           expr: |||
-            process_memory_map_areas{%(job_regex)s} / process_memory_map_areas_limit{%(job_regex)s} > 0.8
-          ||| % { job_regex: $.jobMatcher($._config.job_names.ingester + $._config.job_names.store_gateway) },
+            process_memory_map_areas{%(app_regex)s} / process_memory_map_areas_limit{%(app_regex)s} > 0.8
+          ||| % { app_regex: $.appMatcher($._config.app_names.ingester + $._config.app_names.store_gateway) },
           'for': '5m',
           labels: {
             severity: 'critical',
           },
           annotations: {
-            message: '{{ $labels.%(per_job_label)s }}/%(alert_instance_variable)s has a number of mmap-ed areas close to the limit.' % $._config,
+            message: '{{ $labels.%(per_app_label)s }}/%(alert_instance_variable)s has a number of mmap-ed areas close to the limit.' % $._config,
           },
         },
         {
@@ -284,8 +284,8 @@ local utils = import 'mixin-utils/utils.libsonnet';
           alert: $.alertName('RingMembersMismatch'),
           expr: |||
             (
-              avg by(%(alert_aggregation_labels)s) (sum by(%(alert_aggregation_labels)s, %(per_instance_label)s) (cortex_ring_members{name="%(component)s",%(job_regex)s}))
-              != sum by(%(alert_aggregation_labels)s) (up{%(job_regex)s})
+              avg by(%(alert_aggregation_labels)s) (sum by(%(alert_aggregation_labels)s, %(per_instance_label)s) (cortex_ring_members{name="%(component)s",%(app_regex)s}))
+              != sum by(%(alert_aggregation_labels)s) (up{%(app_regex)s})
             )
             and
             (
@@ -294,28 +294,28 @@ local utils = import 'mixin-utils/utils.libsonnet';
           ||| % {
             alert_aggregation_labels: $._config.alert_aggregation_labels,
             per_instance_label: $._config.per_instance_label,
-            component: component_job[0],
-            job_regex: $.jobMatcher(component_job[1]),
+            component: component_app[0],
+            app_regex: $.appMatcher(component_app[1]),
           },
           'for': '15m',
           labels: {
-            component: component_job[0],
+            component: component_app[0],
             severity: 'warning',
           },
           annotations: {
             message: |||
               Number of members in %(product)s %(component)s hash ring does not match the expected number in %(alert_aggregation_variables)s.
-            ||| % { component: component_job[0], alert_aggregation_variables: $._config.alert_aggregation_variables, product: $._config.product },
+            ||| % { component: component_app[0], alert_aggregation_variables: $._config.alert_aggregation_variables, product: $._config.product },
           },
         }
         // NOTE(jhesketh): It is expected that the stateless components may trigger this alert
         //                 too often. Just alert on ingester for now.
-        for component_job in [
-          // ['compactor', $._config.job_names.compactor],
-          // ['distributor', $._config.job_names.distributor],
-          ['ingester', $._config.job_names.ingester],
-          // ['ruler', $._config.job_names.ruler],
-          // ['store-gateway', $._config.job_names.store_gateway],
+        for component_app in [
+          // ['compactor', $._config.app_names.compactor],
+          // ['distributor', $._config.app_names.distributor],
+          ['ingester', $._config.app_names.ingester],
+          // ['ruler', $._config.app_names.ruler],
+          // ['store-gateway', $._config.app_names.store_gateway],
         ]
       ],
     },
@@ -337,7 +337,7 @@ local utils = import 'mixin-utils/utils.libsonnet';
           },
           annotations: {
             message: |||
-              Ingester {{ $labels.%(per_job_label)s }}/%(alert_instance_variable)s has reached {{ $value | humanizePercentage }} of its series limit.
+              Ingester {{ $labels.%(per_app_label)s }}/%(alert_instance_variable)s has reached {{ $value | humanizePercentage }} of its series limit.
             ||| % $._config,
           },
         },
@@ -356,7 +356,7 @@ local utils = import 'mixin-utils/utils.libsonnet';
           },
           annotations: {
             message: |||
-              Ingester {{ $labels.%(per_job_label)s }}/%(alert_instance_variable)s has reached {{ $value | humanizePercentage }} of its series limit.
+              Ingester {{ $labels.%(per_app_label)s }}/%(alert_instance_variable)s has reached {{ $value | humanizePercentage }} of its series limit.
             ||| % $._config,
           },
         },
@@ -375,7 +375,7 @@ local utils = import 'mixin-utils/utils.libsonnet';
           },
           annotations: {
             message: |||
-              Ingester {{ $labels.%(per_job_label)s }}/%(alert_instance_variable)s has reached {{ $value | humanizePercentage }} of its tenant limit.
+              Ingester {{ $labels.%(per_app_label)s }}/%(alert_instance_variable)s has reached {{ $value | humanizePercentage }} of its tenant limit.
             ||| % $._config,
           },
         },
@@ -394,7 +394,7 @@ local utils = import 'mixin-utils/utils.libsonnet';
           },
           annotations: {
             message: |||
-              Ingester {{ $labels.%(per_job_label)s }}/%(alert_instance_variable)s has reached {{ $value | humanizePercentage }} of its tenant limit.
+              Ingester {{ $labels.%(per_app_label)s }}/%(alert_instance_variable)s has reached {{ $value | humanizePercentage }} of its tenant limit.
             ||| % $._config,
           },
         },
@@ -410,7 +410,7 @@ local utils = import 'mixin-utils/utils.libsonnet';
           },
           annotations: {
             message: |||
-              %(product)s instance {{ $labels.%(per_job_label)s }}/%(alert_instance_variable)s has reached {{ $value | humanizePercentage }} of its TCP connections limit for {{ $labels.protocol }} protocol.
+              %(product)s instance {{ $labels.%(per_app_label)s }}/%(alert_instance_variable)s has reached {{ $value | humanizePercentage }} of its TCP connections limit for {{ $labels.protocol }} protocol.
             ||| % $._config,
           },
         },
@@ -429,7 +429,7 @@ local utils = import 'mixin-utils/utils.libsonnet';
           },
           annotations: {
             message: |||
-              Distributor {{ $labels.%(per_job_label)s }}/%(alert_instance_variable)s has reached {{ $value | humanizePercentage }} of its inflight push request limit.
+              Distributor {{ $labels.%(per_app_label)s }}/%(alert_instance_variable)s has reached {{ $value | humanizePercentage }} of its inflight push request limit.
             ||| % $._config,
           },
         },
@@ -661,7 +661,7 @@ local utils = import 'mixin-utils/utils.libsonnet';
         {
           alert: $.alertName('RulerFailedRingCheck'),
           expr: |||
-            sum by (%(alert_aggregation_labels)s, %(per_job_label)s) (rate(cortex_ruler_ring_check_errors_total[1m]))
+            sum by (%(alert_aggregation_labels)s, %(per_app_label)s) (rate(cortex_ruler_ring_check_errors_total[1m]))
                > 0
           ||| % $._config,
           'for': '5m',
@@ -682,7 +682,7 @@ local utils = import 'mixin-utils/utils.libsonnet';
               /
             sum by (%s) (rate(cortex_request_duration_seconds_count{route="/httpgrpc.HTTP/Handle", %s}[5m]))
             ) > 1
-          ||| % [$._config.alert_aggregation_labels, $.jobMatcher($._config.job_names.ruler_query_frontend), $._config.alert_aggregation_labels, $.jobMatcher($._config.job_names.ruler_query_frontend)],
+          ||| % [$._config.alert_aggregation_labels, $.appMatcher($._config.app_names.ruler_query_frontend), $._config.alert_aggregation_labels, $.appMatcher($._config.app_names.ruler_query_frontend)],
           'for': '5m',
           labels: {
             severity: 'warning',
@@ -703,7 +703,7 @@ local utils = import 'mixin-utils/utils.libsonnet';
           expr:
             |||
               avg by (%s) (memberlist_client_cluster_members_count) != sum by (%s) (up{%s=~".+/%s"})
-            ||| % [$._config.alert_aggregation_labels, $._config.alert_aggregation_labels, $._config.per_job_label, simpleRegexpOpt($._config.job_names.ring_members)],
+            ||| % [$._config.alert_aggregation_labels, $._config.alert_aggregation_labels, $._config.per_app_label, simpleRegexpOpt($._config.app_names.ring_members)],
           'for': '15m',
           labels: {
             severity: 'warning',

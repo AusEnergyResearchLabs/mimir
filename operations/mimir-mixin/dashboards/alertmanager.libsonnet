@@ -3,9 +3,9 @@ local filename = 'mimir-alertmanager.json';
 
 (import 'dashboard-utils.libsonnet') {
   [filename]:
-    local jobSelector = $.jobSelector($._config.job_names.alertmanager);
-    local jobInstanceSelector = jobSelector + [utils.selector.noop($._config.per_instance_label)];
-    local jobIntegrationSelector = jobSelector + [utils.selector.noop('integration')];
+    local appSelector = $.appSelector($._config.app_names.alertmanager);
+    local appInstanceSelector = appSelector + [utils.selector.noop($._config.per_instance_label)];
+    local appIntegrationSelector = appSelector + [utils.selector.noop('integration')];
     ($.dashboard('Alertmanager') + { uid: std.md5(filename) })
     .addClusterSelectorTemplates()
     .addRow(
@@ -15,26 +15,26 @@ local filename = 'mimir-alertmanager.json';
        })
       .addPanel(
         $.panel('Total alerts') +
-        $.statPanel('sum(%s:cortex_alertmanager_alerts:sum%s)' % [$.recordingRulePrefix(jobInstanceSelector), utils.toPrometheusSelector(jobInstanceSelector)], format='short')
+        $.statPanel('sum(%s:cortex_alertmanager_alerts:sum%s)' % [$.recordingRulePrefix(appInstanceSelector), utils.toPrometheusSelector(appInstanceSelector)], format='short')
       )
       .addPanel(
         $.panel('Total silences') +
-        $.statPanel('sum(%s:cortex_alertmanager_silences:sum%s)' % [$.recordingRulePrefix(jobInstanceSelector), utils.toPrometheusSelector(jobInstanceSelector)], format='short')
+        $.statPanel('sum(%s:cortex_alertmanager_silences:sum%s)' % [$.recordingRulePrefix(appInstanceSelector), utils.toPrometheusSelector(appInstanceSelector)], format='short')
       )
       .addPanel(
         $.panel('Tenants') +
-        $.statPanel('max(cortex_alertmanager_tenants_discovered{%s})' % $.jobMatcher($._config.job_names.alertmanager), format='short')
+        $.statPanel('max(cortex_alertmanager_tenants_discovered{%s})' % $.appMatcher($._config.app_names.alertmanager), format='short')
       )
     )
     .addRow(
       $.row('Alertmanager Distributor')
       .addPanel(
         $.panel('QPS') +
-        $.qpsPanel('cortex_request_duration_seconds_count{%s, route=~"/alertmanagerpb.Alertmanager/HandleRequest"}' % $.jobMatcher($._config.job_names.alertmanager))
+        $.qpsPanel('cortex_request_duration_seconds_count{%s, route=~"/alertmanagerpb.Alertmanager/HandleRequest"}' % $.appMatcher($._config.app_names.alertmanager))
       )
       .addPanel(
         $.panel('Latency') +
-        utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.jobSelector($._config.job_names.alertmanager) + [utils.selector.re('route', '/alertmanagerpb.Alertmanager/HandleRequest')])
+        utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.appSelector($._config.app_names.alertmanager) + [utils.selector.re('route', '/alertmanagerpb.Alertmanager/HandleRequest')])
       )
     )
     .addRow(
@@ -47,12 +47,12 @@ local filename = 'mimir-alertmanager.json';
             -
             sum(%(prefix)s:cortex_alertmanager_alerts_invalid_total:rate5m%(selectors)s)
           ||| % {
-            prefix: $.recordingRulePrefix(jobSelector),
-            selectors: utils.toPrometheusSelector(jobSelector),
+            prefix: $.recordingRulePrefix(appSelector),
+            selectors: utils.toPrometheusSelector(appSelector),
           },
           'sum(%(prefix)s:cortex_alertmanager_alerts_invalid_total:rate5m%(selectors)s)' % {
-            prefix: $.recordingRulePrefix(jobSelector),
-            selectors: utils.toPrometheusSelector(jobSelector),
+            prefix: $.recordingRulePrefix(appSelector),
+            selectors: utils.toPrometheusSelector(appSelector),
           },
         )
       )
@@ -62,7 +62,7 @@ local filename = 'mimir-alertmanager.json';
       .addPanel(
         $.panel('per %s Active Aggregation Groups' % $._config.per_instance_label) +
         $.queryPanel(
-          'cortex_alertmanager_dispatcher_aggregation_groups{%s}' % $.jobMatcher($._config.job_names.alertmanager),
+          'cortex_alertmanager_dispatcher_aggregation_groups{%s}' % $.appMatcher($._config.app_names.alertmanager),
           '{{%s}}' % $._config.per_instance_label
         ) +
         $.stack
@@ -89,12 +89,12 @@ local filename = 'mimir-alertmanager.json';
               ) > 0
               or on () vector(0)
             ||| % {
-              prefix: $.recordingRulePrefix(jobIntegrationSelector),
-              selectors: utils.toPrometheusSelector(jobIntegrationSelector),
+              prefix: $.recordingRulePrefix(appIntegrationSelector),
+              selectors: utils.toPrometheusSelector(appIntegrationSelector),
             },
             'sum(%(prefix)s:cortex_alertmanager_notifications_failed_total:rate5m%(selectors)s) by(integration)' % {
-              prefix: $.recordingRulePrefix(jobIntegrationSelector),
-              selectors: utils.toPrometheusSelector(jobIntegrationSelector),
+              prefix: $.recordingRulePrefix(appIntegrationSelector),
+              selectors: utils.toPrometheusSelector(appIntegrationSelector),
             },
           ],
           ['success - {{ integration }}', 'failed - {{ integration }}']
@@ -102,7 +102,7 @@ local filename = 'mimir-alertmanager.json';
       )
       .addPanel(
         $.panel('Latency') +
-        $.latencyPanel('cortex_alertmanager_notification_latency_seconds', '{%s}' % $.jobMatcher($._config.job_names.alertmanager))
+        $.latencyPanel('cortex_alertmanager_notification_latency_seconds', '{%s}' % $.appMatcher($._config.app_names.alertmanager))
       )
     )
     .addRowIf(
@@ -110,11 +110,11 @@ local filename = 'mimir-alertmanager.json';
       $.row('Configuration API (gateway) + Alertmanager UI')
       .addPanel(
         $.panel('QPS') +
-        $.qpsPanel('cortex_request_duration_seconds_count{%s, route=~"api_v1_alerts|alertmanager"}' % $.jobMatcher($._config.job_names.gateway))
+        $.qpsPanel('cortex_request_duration_seconds_count{%s, route=~"api_v1_alerts|alertmanager"}' % $.appMatcher($._config.app_names.gateway))
       )
       .addPanel(
         $.panel('Latency') +
-        utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.jobSelector($._config.job_names.gateway) + [utils.selector.re('route', 'api_v1_alerts|alertmanager')])
+        utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.appSelector($._config.app_names.gateway) + [utils.selector.re('route', 'api_v1_alerts|alertmanager')])
       )
     )
     .addRows(
@@ -125,7 +125,7 @@ local filename = 'mimir-alertmanager.json';
       .addPanel(
         $.panel('Per %s tenants' % $._config.per_instance_label) +
         $.queryPanel(
-          'max by(%s) (cortex_alertmanager_tenants_owned{%s})' % [$._config.per_instance_label, $.jobMatcher($._config.job_names.alertmanager)],
+          'max by(%s) (cortex_alertmanager_tenants_owned{%s})' % [$._config.per_instance_label, $.appMatcher($._config.app_names.alertmanager)],
           '{{%s}}' % $._config.per_instance_label
         ) +
         $.stack
@@ -133,7 +133,7 @@ local filename = 'mimir-alertmanager.json';
       .addPanel(
         $.panel('Per %s alerts' % $._config.per_instance_label) +
         $.queryPanel(
-          'sum by(%s) (%s:cortex_alertmanager_alerts:sum%s)' % [$._config.per_instance_label, $.recordingRulePrefix(jobInstanceSelector), utils.toPrometheusSelector(jobInstanceSelector)],
+          'sum by(%s) (%s:cortex_alertmanager_alerts:sum%s)' % [$._config.per_instance_label, $.recordingRulePrefix(appInstanceSelector), utils.toPrometheusSelector(appInstanceSelector)],
           '{{%s}}' % $._config.per_instance_label
         ) +
         $.stack
@@ -141,7 +141,7 @@ local filename = 'mimir-alertmanager.json';
       .addPanel(
         $.panel('Per %s silences' % $._config.per_instance_label) +
         $.queryPanel(
-          'sum by(%s) (%s:cortex_alertmanager_silences:sum%s)' % [$._config.per_instance_label, $.recordingRulePrefix(jobInstanceSelector), utils.toPrometheusSelector(jobInstanceSelector)],
+          'sum by(%s) (%s:cortex_alertmanager_silences:sum%s)' % [$._config.per_instance_label, $.recordingRulePrefix(appInstanceSelector), utils.toPrometheusSelector(appInstanceSelector)],
           '{{%s}}' % $._config.per_instance_label
         ) +
         $.stack
@@ -156,21 +156,21 @@ local filename = 'mimir-alertmanager.json';
             sum(rate(cortex_alertmanager_sync_configs_total{%s}[$__rate_interval]))
             -
             sum(rate(cortex_alertmanager_sync_configs_failed_total{%s}[$__rate_interval]))
-          ||| % [$.jobMatcher($._config.job_names.alertmanager), $.jobMatcher($._config.job_names.alertmanager)],
-          'sum(rate(cortex_alertmanager_sync_configs_failed_total{%s}[$__rate_interval]))' % $.jobMatcher($._config.job_names.alertmanager),
+          ||| % [$.appMatcher($._config.app_names.alertmanager), $.appMatcher($._config.app_names.alertmanager)],
+          'sum(rate(cortex_alertmanager_sync_configs_failed_total{%s}[$__rate_interval]))' % $.appMatcher($._config.app_names.alertmanager),
         )
       )
       .addPanel(
         $.panel('Syncs/sec (by reason)') +
         $.queryPanel(
-          'sum by(reason) (rate(cortex_alertmanager_sync_configs_total{%s}[$__rate_interval]))' % $.jobMatcher($._config.job_names.alertmanager),
+          'sum by(reason) (rate(cortex_alertmanager_sync_configs_total{%s}[$__rate_interval]))' % $.appMatcher($._config.app_names.alertmanager),
           '{{reason}}'
         )
       )
       .addPanel(
         $.panel('Ring check errors/sec') +
         $.queryPanel(
-          'sum (rate(cortex_alertmanager_ring_check_errors_total{%s}[$__rate_interval]))' % $.jobMatcher($._config.job_names.alertmanager),
+          'sum (rate(cortex_alertmanager_ring_check_errors_total{%s}[$__rate_interval]))' % $.appMatcher($._config.app_names.alertmanager),
           'errors'
         )
       )
@@ -180,7 +180,7 @@ local filename = 'mimir-alertmanager.json';
       .addPanel(
         $.panel('Initial syncs /sec') +
         $.queryPanel(
-          'sum by(outcome) (rate(cortex_alertmanager_state_initial_sync_completed_total{%s}[$__rate_interval]))' % $.jobMatcher($._config.job_names.alertmanager),
+          'sum by(outcome) (rate(cortex_alertmanager_state_initial_sync_completed_total{%s}[$__rate_interval]))' % $.appMatcher($._config.app_names.alertmanager),
           '{{outcome}}'
         ) + {
           targets: [
@@ -193,7 +193,7 @@ local filename = 'mimir-alertmanager.json';
       )
       .addPanel(
         $.panel('Initial sync duration') +
-        $.latencyPanel('cortex_alertmanager_state_initial_sync_duration_seconds', '{%s}' % $.jobMatcher($._config.job_names.alertmanager)) + {
+        $.latencyPanel('cortex_alertmanager_state_initial_sync_duration_seconds', '{%s}' % $.appMatcher($._config.app_names.alertmanager)) + {
           targets: [
             target {
               interval: '1m',
@@ -209,8 +209,8 @@ local filename = 'mimir-alertmanager.json';
             sum(rate(cortex_alertmanager_state_fetch_replica_state_total{%s}[$__rate_interval]))
             -
             sum(rate(cortex_alertmanager_state_fetch_replica_state_failed_total{%s}[$__rate_interval]))
-          ||| % [$.jobMatcher($._config.job_names.alertmanager), $.jobMatcher($._config.job_names.alertmanager)],
-          'sum(rate(cortex_alertmanager_state_fetch_replica_state_failed_total{%s}[$__rate_interval]))' % $.jobMatcher($._config.job_names.alertmanager),
+          ||| % [$.appMatcher($._config.app_names.alertmanager), $.appMatcher($._config.app_names.alertmanager)],
+          'sum(rate(cortex_alertmanager_state_fetch_replica_state_failed_total{%s}[$__rate_interval]))' % $.appMatcher($._config.app_names.alertmanager),
         ) + {
           targets: [
             target {
@@ -231,12 +231,12 @@ local filename = 'mimir-alertmanager.json';
             -
             sum(%(prefix)s:cortex_alertmanager_state_replication_failed_total:rate5m%(selectors)s)
           ||| % {
-            prefix: $.recordingRulePrefix(jobSelector),
-            selectors: utils.toPrometheusSelector(jobSelector),
+            prefix: $.recordingRulePrefix(appSelector),
+            selectors: utils.toPrometheusSelector(appSelector),
           },
           'sum(%(prefix)s:cortex_alertmanager_state_replication_failed_total:rate5m%(selectors)s)' % {
-            prefix: $.recordingRulePrefix(jobSelector),
-            selectors: utils.toPrometheusSelector(jobSelector),
+            prefix: $.recordingRulePrefix(appSelector),
+            selectors: utils.toPrometheusSelector(appSelector),
           },
         )
       )
@@ -248,12 +248,12 @@ local filename = 'mimir-alertmanager.json';
             -
             sum(%(prefix)s:cortex_alertmanager_partial_state_merges_failed_total:rate5m%(selectors)s)
           ||| % {
-            prefix: $.recordingRulePrefix(jobSelector),
-            selectors: utils.toPrometheusSelector(jobSelector),
+            prefix: $.recordingRulePrefix(appSelector),
+            selectors: utils.toPrometheusSelector(appSelector),
           },
           'sum(%(prefix)s:cortex_alertmanager_partial_state_merges_failed_total:rate5m%(selectors)s)' % {
-            prefix: $.recordingRulePrefix(jobSelector),
-            selectors: utils.toPrometheusSelector(jobSelector),
+            prefix: $.recordingRulePrefix(appSelector),
+            selectors: utils.toPrometheusSelector(appSelector),
           },
         )
       )
@@ -264,8 +264,8 @@ local filename = 'mimir-alertmanager.json';
             sum(rate(cortex_alertmanager_state_persist_total{%s}[$__rate_interval]))
             -
             sum(rate(cortex_alertmanager_state_persist_failed_total{%s}[$__rate_interval]))
-          ||| % [$.jobMatcher($._config.job_names.alertmanager), $.jobMatcher($._config.job_names.alertmanager)],
-          'sum(rate(cortex_alertmanager_state_persist_failed_total{%s}[$__rate_interval]))' % $.jobMatcher($._config.job_names.alertmanager),
+          ||| % [$.appMatcher($._config.app_names.alertmanager), $.appMatcher($._config.app_names.alertmanager)],
+          'sum(rate(cortex_alertmanager_state_persist_failed_total{%s}[$__rate_interval]))' % $.appMatcher($._config.app_names.alertmanager),
         )
       )
     ),

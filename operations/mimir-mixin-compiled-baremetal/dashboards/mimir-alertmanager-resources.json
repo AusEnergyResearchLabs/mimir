@@ -81,7 +81,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance) (rate(node_cpu_seconds_total{mode=\"user\",cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*alertmanager.*\"}[$__rate_interval]))",
+                        "expr": "sum by(instance) (rate(node_cpu_seconds_total{mode=\"user\",app=~\"$app\",instance=~\".*alertmanager.*\"}[$__rate_interval]))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -170,7 +170,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "node_memory_MemTotal_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*alertmanager.*\"}\n- node_memory_MemFree_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*alertmanager.*\"}\n- node_memory_Buffers_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*alertmanager.*\"}\n- node_memory_Cached_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*alertmanager.*\"}\n- node_memory_Slab_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*alertmanager.*\"}\n- node_memory_PageTables_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*alertmanager.*\"}\n- node_memory_SwapCached_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*alertmanager.*\"}\n",
+                        "expr": "node_memory_MemTotal_bytes{app=~\"$app\",instance=~\".*alertmanager.*\"}\n- node_memory_MemFree_bytes{app=~\"$app\",instance=~\".*alertmanager.*\"}\n- node_memory_Buffers_bytes{app=~\"$app\",instance=~\".*alertmanager.*\"}\n- node_memory_Cached_bytes{app=~\"$app\",instance=~\".*alertmanager.*\"}\n- node_memory_Slab_bytes{app=~\"$app\",instance=~\".*alertmanager.*\"}\n- node_memory_PageTables_bytes{app=~\"$app\",instance=~\".*alertmanager.*\"}\n- node_memory_SwapCached_bytes{app=~\"$app\",instance=~\".*alertmanager.*\"}\n",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -244,7 +244,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance) (go_memstats_heap_inuse_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*alertmanager.*\"})",
+                        "expr": "sum by(instance) (go_memstats_heap_inuse_bytes{app=~\"$app\",instance=~\".*alertmanager.*\"})",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -330,7 +330,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance) (rate(node_network_receive_bytes_total{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*alertmanager.*\"}[$__rate_interval]))",
+                        "expr": "sum by(instance) (rate(node_network_receive_bytes_total{app=~\"$app\",instance=~\".*alertmanager.*\"}[$__rate_interval]))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -406,7 +406,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance) (rate(node_network_transmit_bytes_total{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*alertmanager.*\"}[$__rate_interval]))",
+                        "expr": "sum by(instance) (rate(node_network_transmit_bytes_total{app=~\"$app\",instance=~\".*alertmanager.*\"}[$__rate_interval]))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -494,7 +494,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance, instance, device) (\n  rate(\n    node_disk_written_bytes_total{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*alertmanager.*\"}[$__rate_interval]\n  )\n)\n",
+                        "expr": "sum by(instance, instance, device) (\n  rate(\n    node_disk_written_bytes_total{app=~\"$app\",instance=~\".*alertmanager.*\"}[$__rate_interval]\n  )\n)\n",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}} - {{device}}",
@@ -570,7 +570,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance, instance, device) (\n  rate(\n    node_disk_read_bytes_total{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*alertmanager.*\"}[$__rate_interval]\n  )\n)\n",
+                        "expr": "sum by(instance, instance, device) (\n  rate(\n    node_disk_read_bytes_total{app=~\"$app\",instance=~\".*alertmanager.*\"}[$__rate_interval]\n  )\n)\n",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}} - {{device}}",
@@ -658,7 +658,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "1 - ((node_filesystem_avail_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*alertmanager.*\", mountpoint=\"/\"})\n    / node_filesystem_size_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*alertmanager.*\", mountpoint=\"/\"})\n",
+                        "expr": "1 - ((node_filesystem_avail_bytes{app=~\"$app\",instance=~\".*alertmanager.*\", mountpoint=\"/\"})\n    / node_filesystem_size_bytes{app=~\"$app\",instance=~\".*alertmanager.*\", mountpoint=\"/\"})\n",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -733,29 +733,6 @@
                "type": "datasource"
             },
             {
-               "allValue": ".*",
-               "current": {
-                  "text": "prod",
-                  "value": "prod"
-               },
-               "datasource": "$datasource",
-               "hide": 0,
-               "includeAll": true,
-               "label": "cluster",
-               "multi": false,
-               "name": "cluster",
-               "options": [ ],
-               "query": "label_values(cortex_build_info, cluster)",
-               "refresh": 1,
-               "regex": "",
-               "sort": 2,
-               "tagValuesQuery": "",
-               "tags": [ ],
-               "tagsQuery": "",
-               "type": "query",
-               "useTags": false
-            },
-            {
                "allValue": null,
                "current": {
                   "text": "prod",
@@ -764,11 +741,11 @@
                "datasource": "$datasource",
                "hide": 0,
                "includeAll": false,
-               "label": "namespace",
+               "label": "app",
                "multi": false,
-               "name": "namespace",
+               "name": "app",
                "options": [ ],
-               "query": "label_values(cortex_build_info{cluster=~\"$cluster\"}, namespace)",
+               "query": "label_values(cortex_build_info, app)",
                "refresh": 1,
                "regex": "",
                "sort": 2,

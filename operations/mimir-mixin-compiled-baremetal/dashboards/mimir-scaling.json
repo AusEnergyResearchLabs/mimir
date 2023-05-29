@@ -37,7 +37,7 @@
                {
                   "id": 1,
                   "options": {
-                     "content": "This dashboard identifies scaling-related issues by suggesting services that you might want to scale up.\nThe table that follows contains a suggested number of replicas and the reason why.\nIf the system is failing and depending on the reason, try scaling up to the specified number.\nThe specified numbers are intended as helpful guidelines when things go wrong, rather than prescriptive guidelines.\n\nReasons:\n- **sample_rate**: There are not enough replicas to handle the\n  sample rate.  Applies to distributor and ingesters.\n- **active_series**: There are not enough replicas\n  to handle the number of active series.  Applies to ingesters.\n- **cpu_usage**: There are not enough replicas\n  based on the CPU usage of the jobs vs the resource requests.\n  Applies to all jobs.\n- **memory_usage**: There are not enough replicas based on the memory\n  usage vs the resource requests.  Applies to all jobs.\n- **active_series_limits**: There are not enough replicas to hold 60% of the\n  sum of all the per tenant series limits.\n- **sample_rate_limits**: There are not enough replicas to handle 60% of the\n  sum of all the per tenant rate limits.\n",
+                     "content": "This dashboard identifies scaling-related issues by suggesting services that you might want to scale up.\nThe table that follows contains a suggested number of replicas and the reason why.\nIf the system is failing and depending on the reason, try scaling up to the specified number.\nThe specified numbers are intended as helpful guidelines when things go wrong, rather than prescriptive guidelines.\n\nReasons:\n- **sample_rate**: There are not enough replicas to handle the\n  sample rate.  Applies to distributor and ingesters.\n- **active_series**: There are not enough replicas\n  to handle the number of active series.  Applies to ingesters.\n- **cpu_usage**: There are not enough replicas\n  based on the CPU usage of the apps vs the resource requests.\n  Applies to all apps.\n- **memory_usage**: There are not enough replicas based on the memory\n  usage vs the resource requests.  Applies to all apps.\n- **active_series_limits**: There are not enough replicas to hold 60% of the\n  sum of all the per tenant series limits.\n- **sample_rate_limits**: There are not enough replicas to handle 60% of the\n  sum of all the per tenant rate limits.\n",
                      "mode": "markdown"
                   },
                   "span": 12,
@@ -201,7 +201,7 @@
                   ],
                   "targets": [
                      {
-                        "expr": "sort_desc(\n  cluster_namespace_deployment_reason:required_replicas:count{cluster=~\"$cluster\", namespace=~\"$namespace\"}\n    > ignoring(reason) group_left\n  cluster_namespace_deployment:actual_replicas:count{cluster=~\"$cluster\", namespace=~\"$namespace\"}\n)\n",
+                        "expr": "sort_desc(\n  cluster_namespace_deployment_reason:required_replicas:count{app=~\"$app\"}\n    > ignoring(reason) group_left\n  cluster_namespace_deployment:actual_replicas:count{app=~\"$app\"}\n)\n",
                         "format": "table",
                         "instant": true,
                         "intervalFactor": 2,
@@ -287,35 +287,11 @@
                "datasource": "$datasource",
                "hide": 0,
                "includeAll": true,
-               "label": "cluster",
+               "label": "app",
                "multi": true,
-               "name": "cluster",
+               "name": "app",
                "options": [ ],
-               "query": "label_values(cortex_build_info, cluster)",
-               "refresh": 1,
-               "regex": "",
-               "sort": 2,
-               "tagValuesQuery": "",
-               "tags": [ ],
-               "tagsQuery": "",
-               "type": "query",
-               "useTags": false
-            },
-            {
-               "allValue": ".+",
-               "current": {
-                  "selected": true,
-                  "text": "All",
-                  "value": "$__all"
-               },
-               "datasource": "$datasource",
-               "hide": 0,
-               "includeAll": true,
-               "label": "namespace",
-               "multi": true,
-               "name": "namespace",
-               "options": [ ],
-               "query": "label_values(cortex_build_info{cluster=~\"$cluster\"}, namespace)",
+               "query": "label_values(cortex_build_info, app)",
                "refresh": 1,
                "regex": "",
                "sort": 2,

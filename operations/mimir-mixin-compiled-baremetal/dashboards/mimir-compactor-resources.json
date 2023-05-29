@@ -81,7 +81,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance) (rate(node_cpu_seconds_total{mode=\"user\",cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*compactor.*\"}[$__rate_interval]))",
+                        "expr": "sum by(instance) (rate(node_cpu_seconds_total{mode=\"user\",app=~\"$app\",instance=~\".*compactor.*\"}[$__rate_interval]))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -155,7 +155,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance) (go_memstats_heap_inuse_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*compactor.*\"})",
+                        "expr": "sum by(instance) (go_memstats_heap_inuse_bytes{app=~\"$app\",instance=~\".*compactor.*\"})",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -256,7 +256,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "node_memory_Active_anon_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*compactor.*\"}\n+ node_memory_SwapCached_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*compactor.*\"}\n",
+                        "expr": "node_memory_Active_anon_bytes{app=~\"$app\",instance=~\".*compactor.*\"}\n+ node_memory_SwapCached_bytes{app=~\"$app\",instance=~\".*compactor.*\"}\n",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -345,7 +345,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "node_memory_MemTotal_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*compactor.*\"}\n- node_memory_MemFree_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*compactor.*\"}\n- node_memory_Buffers_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*compactor.*\"}\n- node_memory_Cached_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*compactor.*\"}\n- node_memory_Slab_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*compactor.*\"}\n- node_memory_PageTables_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*compactor.*\"}\n- node_memory_SwapCached_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*compactor.*\"}\n",
+                        "expr": "node_memory_MemTotal_bytes{app=~\"$app\",instance=~\".*compactor.*\"}\n- node_memory_MemFree_bytes{app=~\"$app\",instance=~\".*compactor.*\"}\n- node_memory_Buffers_bytes{app=~\"$app\",instance=~\".*compactor.*\"}\n- node_memory_Cached_bytes{app=~\"$app\",instance=~\".*compactor.*\"}\n- node_memory_Slab_bytes{app=~\"$app\",instance=~\".*compactor.*\"}\n- node_memory_PageTables_bytes{app=~\"$app\",instance=~\".*compactor.*\"}\n- node_memory_SwapCached_bytes{app=~\"$app\",instance=~\".*compactor.*\"}\n",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -431,7 +431,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance) (rate(node_network_receive_bytes_total{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*compactor.*\"}[$__rate_interval]))",
+                        "expr": "sum by(instance) (rate(node_network_receive_bytes_total{app=~\"$app\",instance=~\".*compactor.*\"}[$__rate_interval]))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -507,7 +507,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance) (rate(node_network_transmit_bytes_total{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*compactor.*\"}[$__rate_interval]))",
+                        "expr": "sum by(instance) (rate(node_network_transmit_bytes_total{app=~\"$app\",instance=~\".*compactor.*\"}[$__rate_interval]))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -595,7 +595,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance, instance, device) (\n  rate(\n    node_disk_written_bytes_total{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*compactor.*\"}[$__rate_interval]\n  )\n)\n",
+                        "expr": "sum by(instance, instance, device) (\n  rate(\n    node_disk_written_bytes_total{app=~\"$app\",instance=~\".*compactor.*\"}[$__rate_interval]\n  )\n)\n",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}} - {{device}}",
@@ -671,7 +671,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance, instance, device) (\n  rate(\n    node_disk_read_bytes_total{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*compactor.*\"}[$__rate_interval]\n  )\n)\n",
+                        "expr": "sum by(instance, instance, device) (\n  rate(\n    node_disk_read_bytes_total{app=~\"$app\",instance=~\".*compactor.*\"}[$__rate_interval]\n  )\n)\n",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}} - {{device}}",
@@ -747,7 +747,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "1 - ((node_filesystem_avail_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*compactor.*\", mountpoint=\"/\"})\n    / node_filesystem_size_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*compactor.*\", mountpoint=\"/\"})\n",
+                        "expr": "1 - ((node_filesystem_avail_bytes{app=~\"$app\",instance=~\".*compactor.*\", mountpoint=\"/\"})\n    / node_filesystem_size_bytes{app=~\"$app\",instance=~\".*compactor.*\", mountpoint=\"/\"})\n",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -831,35 +831,11 @@
                "datasource": "$datasource",
                "hide": 0,
                "includeAll": true,
-               "label": "cluster",
+               "label": "app",
                "multi": true,
-               "name": "cluster",
+               "name": "app",
                "options": [ ],
-               "query": "label_values(cortex_build_info, cluster)",
-               "refresh": 1,
-               "regex": "",
-               "sort": 2,
-               "tagValuesQuery": "",
-               "tags": [ ],
-               "tagsQuery": "",
-               "type": "query",
-               "useTags": false
-            },
-            {
-               "allValue": ".+",
-               "current": {
-                  "selected": true,
-                  "text": "All",
-                  "value": "$__all"
-               },
-               "datasource": "$datasource",
-               "hide": 0,
-               "includeAll": false,
-               "label": "namespace",
-               "multi": true,
-               "name": "namespace",
-               "options": [ ],
-               "query": "label_values(cortex_build_info{cluster=~\"$cluster\"}, namespace)",
+               "query": "label_values(cortex_build_info, app)",
                "refresh": 1,
                "regex": "",
                "sort": 2,

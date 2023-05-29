@@ -91,7 +91,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum(\n  rate(\n    cortex_request_duration_seconds_count{\n      cluster=~\"$cluster\", job=~\"($namespace)/((ruler-query-frontend.*))\",\n      route=~\"/httpgrpc.HTTP/Handle|.*api_v1_query\"\n    }[$__rate_interval]\n  )\n)\n",
+                        "expr": "sum(\n  rate(\n    cortex_request_duration_seconds_count{\n      app=~\"$app\",\n      route=~\"/httpgrpc.HTTP/Handle|.*api_v1_query\"\n    }[$__rate_interval]\n  )\n)\n",
                         "format": "time_series",
                         "instant": true,
                         "intervalFactor": 2,
@@ -186,7 +186,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by (status) (\n  label_replace(label_replace(rate(cortex_request_duration_seconds_count{cluster=~\"$cluster\", job=~\"($namespace)/((ruler-query-frontend.*))\", route=~\"/httpgrpc.HTTP/Handle|.*api_v1_query\"}[$__rate_interval]),\n  \"status\", \"${1}xx\", \"status_code\", \"([0-9])..\"),\n  \"status\", \"${1}\", \"status_code\", \"([a-z]+)\"))\n",
+                        "expr": "sum by (status) (\n  label_replace(label_replace(rate(cortex_request_duration_seconds_count{app=~\"$app\", route=~\"/httpgrpc.HTTP/Handle|.*api_v1_query\"}[$__rate_interval]),\n  \"status\", \"${1}xx\", \"status_code\", \"([0-9])..\"),\n  \"status\", \"${1}\", \"status_code\", \"([a-z]+)\"))\n",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{status}}",
@@ -262,7 +262,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "histogram_quantile(0.99, sum by (le) (cluster_job_route:cortex_request_duration_seconds_bucket:sum_rate{cluster=~\"$cluster\", job=~\"($namespace)/((ruler-query-frontend.*))\", route=~\"/httpgrpc.HTTP/Handle|.*api_v1_query\"})) * 1e3",
+                        "expr": "histogram_quantile(0.99, sum by (le) (cluster_app_route:cortex_request_duration_seconds_bucket:sum_rate{app=~\"$app\", route=~\"/httpgrpc.HTTP/Handle|.*api_v1_query\"})) * 1e3",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "99th Percentile",
@@ -270,7 +270,7 @@
                         "step": 10
                      },
                      {
-                        "expr": "histogram_quantile(0.50, sum by (le) (cluster_job_route:cortex_request_duration_seconds_bucket:sum_rate{cluster=~\"$cluster\", job=~\"($namespace)/((ruler-query-frontend.*))\", route=~\"/httpgrpc.HTTP/Handle|.*api_v1_query\"})) * 1e3",
+                        "expr": "histogram_quantile(0.50, sum by (le) (cluster_app_route:cortex_request_duration_seconds_bucket:sum_rate{app=~\"$app\", route=~\"/httpgrpc.HTTP/Handle|.*api_v1_query\"})) * 1e3",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "50th Percentile",
@@ -278,7 +278,7 @@
                         "step": 10
                      },
                      {
-                        "expr": "1e3 * sum(cluster_job_route:cortex_request_duration_seconds_sum:sum_rate{cluster=~\"$cluster\", job=~\"($namespace)/((ruler-query-frontend.*))\", route=~\"/httpgrpc.HTTP/Handle|.*api_v1_query\"}) / sum(cluster_job_route:cortex_request_duration_seconds_count:sum_rate{cluster=~\"$cluster\", job=~\"($namespace)/((ruler-query-frontend.*))\", route=~\"/httpgrpc.HTTP/Handle|.*api_v1_query\"})",
+                        "expr": "1e3 * sum(cluster_app_route:cortex_request_duration_seconds_sum:sum_rate{app=~\"$app\", route=~\"/httpgrpc.HTTP/Handle|.*api_v1_query\"}) / sum(cluster_app_route:cortex_request_duration_seconds_count:sum_rate{app=~\"$app\", route=~\"/httpgrpc.HTTP/Handle|.*api_v1_query\"})",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "Average",
@@ -362,7 +362,7 @@
                   "targets": [
                      {
                         "exemplar": true,
-                        "expr": "histogram_quantile(0.99, sum by(le, instance) (rate(cortex_request_duration_seconds_bucket{cluster=~\"$cluster\", job=~\"($namespace)/((ruler-query-frontend.*))\", route=~\"/httpgrpc.HTTP/Handle|.*api_v1_query\"}[$__rate_interval])))",
+                        "expr": "histogram_quantile(0.99, sum by(le, instance) (rate(cortex_request_duration_seconds_bucket{app=~\"$app\", route=~\"/httpgrpc.HTTP/Handle|.*api_v1_query\"}[$__rate_interval])))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "",
@@ -425,7 +425,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by (status) (\n  label_replace(label_replace(rate(cortex_query_scheduler_queue_duration_seconds_count{cluster=~\"$cluster\", job=~\"($namespace)/((ruler-query-scheduler.*))\"}[$__rate_interval]),\n  \"status\", \"${1}xx\", \"status_code\", \"([0-9])..\"),\n  \"status\", \"${1}\", \"status_code\", \"([a-z]+)\"))\n",
+                        "expr": "sum by (status) (\n  label_replace(label_replace(rate(cortex_query_scheduler_queue_duration_seconds_count{app=~\"$app\"}[$__rate_interval]),\n  \"status\", \"${1}xx\", \"status_code\", \"([0-9])..\"),\n  \"status\", \"${1}\", \"status_code\", \"([a-z]+)\"))\n",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{status}}",
@@ -501,7 +501,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "histogram_quantile(0.99, sum(rate(cortex_query_scheduler_queue_duration_seconds_bucket{cluster=~\"$cluster\", job=~\"($namespace)/((ruler-query-scheduler.*))\"}[$__rate_interval])) by (le)) * 1e3",
+                        "expr": "histogram_quantile(0.99, sum(rate(cortex_query_scheduler_queue_duration_seconds_bucket{app=~\"$app\"}[$__rate_interval])) by (le)) * 1e3",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "99th Percentile",
@@ -509,7 +509,7 @@
                         "step": 10
                      },
                      {
-                        "expr": "histogram_quantile(0.50, sum(rate(cortex_query_scheduler_queue_duration_seconds_bucket{cluster=~\"$cluster\", job=~\"($namespace)/((ruler-query-scheduler.*))\"}[$__rate_interval])) by (le)) * 1e3",
+                        "expr": "histogram_quantile(0.50, sum(rate(cortex_query_scheduler_queue_duration_seconds_bucket{app=~\"$app\"}[$__rate_interval])) by (le)) * 1e3",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "50th Percentile",
@@ -517,7 +517,7 @@
                         "step": 10
                      },
                      {
-                        "expr": "sum(rate(cortex_query_scheduler_queue_duration_seconds_sum{cluster=~\"$cluster\", job=~\"($namespace)/((ruler-query-scheduler.*))\"}[$__rate_interval])) * 1e3 / sum(rate(cortex_query_scheduler_queue_duration_seconds_count{cluster=~\"$cluster\", job=~\"($namespace)/((ruler-query-scheduler.*))\"}[$__rate_interval]))",
+                        "expr": "sum(rate(cortex_query_scheduler_queue_duration_seconds_sum{app=~\"$app\"}[$__rate_interval])) * 1e3 / sum(rate(cortex_query_scheduler_queue_duration_seconds_count{app=~\"$app\"}[$__rate_interval]))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "Average",
@@ -613,7 +613,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by (status) (\n  label_replace(label_replace(rate(cortex_querier_request_duration_seconds_count{cluster=~\"$cluster\", job=~\"($namespace)/((ruler-querier.*))\", route=~\"(prometheus|api_prom)_api_v1_.+\"}[$__rate_interval]),\n  \"status\", \"${1}xx\", \"status_code\", \"([0-9])..\"),\n  \"status\", \"${1}\", \"status_code\", \"([a-z]+)\"))\n",
+                        "expr": "sum by (status) (\n  label_replace(label_replace(rate(cortex_querier_request_duration_seconds_count{app=~\"$app\", route=~\"(prometheus|api_prom)_api_v1_.+\"}[$__rate_interval]),\n  \"status\", \"${1}xx\", \"status_code\", \"([0-9])..\"),\n  \"status\", \"${1}\", \"status_code\", \"([a-z]+)\"))\n",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{status}}",
@@ -689,7 +689,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "histogram_quantile(0.99, sum by (le) (cluster_job_route:cortex_querier_request_duration_seconds_bucket:sum_rate{cluster=~\"$cluster\", job=~\"($namespace)/((ruler-querier.*))\", route=~\"(prometheus|api_prom)_api_v1_.+\"})) * 1e3",
+                        "expr": "histogram_quantile(0.99, sum by (le) (cluster_app_route:cortex_querier_request_duration_seconds_bucket:sum_rate{app=~\"$app\", route=~\"(prometheus|api_prom)_api_v1_.+\"})) * 1e3",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "99th Percentile",
@@ -697,7 +697,7 @@
                         "step": 10
                      },
                      {
-                        "expr": "histogram_quantile(0.50, sum by (le) (cluster_job_route:cortex_querier_request_duration_seconds_bucket:sum_rate{cluster=~\"$cluster\", job=~\"($namespace)/((ruler-querier.*))\", route=~\"(prometheus|api_prom)_api_v1_.+\"})) * 1e3",
+                        "expr": "histogram_quantile(0.50, sum by (le) (cluster_app_route:cortex_querier_request_duration_seconds_bucket:sum_rate{app=~\"$app\", route=~\"(prometheus|api_prom)_api_v1_.+\"})) * 1e3",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "50th Percentile",
@@ -705,7 +705,7 @@
                         "step": 10
                      },
                      {
-                        "expr": "1e3 * sum(cluster_job_route:cortex_querier_request_duration_seconds_sum:sum_rate{cluster=~\"$cluster\", job=~\"($namespace)/((ruler-querier.*))\", route=~\"(prometheus|api_prom)_api_v1_.+\"}) / sum(cluster_job_route:cortex_querier_request_duration_seconds_count:sum_rate{cluster=~\"$cluster\", job=~\"($namespace)/((ruler-querier.*))\", route=~\"(prometheus|api_prom)_api_v1_.+\"})",
+                        "expr": "1e3 * sum(cluster_app_route:cortex_querier_request_duration_seconds_sum:sum_rate{app=~\"$app\", route=~\"(prometheus|api_prom)_api_v1_.+\"}) / sum(cluster_app_route:cortex_querier_request_duration_seconds_count:sum_rate{app=~\"$app\", route=~\"(prometheus|api_prom)_api_v1_.+\"})",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "Average",
@@ -789,7 +789,7 @@
                   "targets": [
                      {
                         "exemplar": true,
-                        "expr": "histogram_quantile(0.99, sum by(le, instance) (rate(cortex_querier_request_duration_seconds_bucket{cluster=~\"$cluster\", job=~\"($namespace)/((ruler-querier.*))\", route=~\"(prometheus|api_prom)_api_v1_.+\"}[$__rate_interval])))",
+                        "expr": "histogram_quantile(0.99, sum by(le, instance) (rate(cortex_querier_request_duration_seconds_bucket{app=~\"$app\", route=~\"(prometheus|api_prom)_api_v1_.+\"}[$__rate_interval])))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "",
@@ -845,7 +845,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "kube_horizontalpodautoscaler_spec_min_replicas{cluster=~\"$cluster\", namespace=~\"$namespace\", horizontalpodautoscaler=\"keda-hpa-ruler-querier\"}",
+                        "expr": "kube_horizontalpodautoscaler_spec_min_replicas{app=~\"$app\", horizontalpodautoscaler=\"keda-hpa-ruler-querier\"}",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "Min",
@@ -853,7 +853,7 @@
                         "step": 10
                      },
                      {
-                        "expr": "kube_horizontalpodautoscaler_spec_max_replicas{cluster=~\"$cluster\", namespace=~\"$namespace\", horizontalpodautoscaler=\"keda-hpa-ruler-querier\"}",
+                        "expr": "kube_horizontalpodautoscaler_spec_max_replicas{app=~\"$app\", horizontalpodautoscaler=\"keda-hpa-ruler-querier\"}",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "Max",
@@ -861,7 +861,7 @@
                         "step": 10
                      },
                      {
-                        "expr": "kube_horizontalpodautoscaler_status_current_replicas{cluster=~\"$cluster\", namespace=~\"$namespace\", horizontalpodautoscaler=\"keda-hpa-ruler-querier\"}",
+                        "expr": "kube_horizontalpodautoscaler_status_current_replicas{app=~\"$app\", horizontalpodautoscaler=\"keda-hpa-ruler-querier\"}",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "Current",
@@ -943,7 +943,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "keda_metrics_adapter_scaler_metrics_value +\non(metric) group_left\nlabel_replace(\n    kube_horizontalpodautoscaler_spec_target_metric{cluster=~\"$cluster\", namespace=~\"$namespace\", horizontalpodautoscaler=~\"keda-hpa-ruler-querier\"}\n    * 0, \"metric\", \"$1\", \"metric_name\", \"(.+)\"\n)\n",
+                        "expr": "keda_metrics_adapter_scaler_metrics_value +\non(metric) group_left\nlabel_replace(\n    kube_horizontalpodautoscaler_spec_target_metric{app=~\"$app\", horizontalpodautoscaler=~\"keda-hpa-ruler-querier\"}\n    * 0, \"metric\", \"$1\", \"metric_name\", \"(.+)\"\n)\n",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "Scaling metric",
@@ -951,7 +951,7 @@
                         "step": 10
                      },
                      {
-                        "expr": "kube_horizontalpodautoscaler_spec_target_metric{cluster=~\"$cluster\", namespace=~\"$namespace\", horizontalpodautoscaler=\"keda-hpa-ruler-querier\"}",
+                        "expr": "kube_horizontalpodautoscaler_spec_target_metric{app=~\"$app\", horizontalpodautoscaler=\"keda-hpa-ruler-querier\"}",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "Target per replica",
@@ -1028,7 +1028,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(metric) (rate(keda_metrics_adapter_scaler_errors[$__rate_interval])) +\non(metric) group_left\nlabel_replace(\n    kube_horizontalpodautoscaler_spec_target_metric{cluster=~\"$cluster\", namespace=~\"$namespace\", horizontalpodautoscaler=~\"keda-hpa-ruler-querier\"}\n    * 0, \"metric\", \"$1\", \"metric_name\", \"(.+)\"\n)\n",
+                        "expr": "sum by(metric) (rate(keda_metrics_adapter_scaler_errors[$__rate_interval])) +\non(metric) group_left\nlabel_replace(\n    kube_horizontalpodautoscaler_spec_target_metric{app=~\"$app\", horizontalpodautoscaler=~\"keda-hpa-ruler-querier\"}\n    * 0, \"metric\", \"$1\", \"metric_name\", \"(.+)\"\n)\n",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{metric}} failures",
@@ -1112,35 +1112,11 @@
                "datasource": "$datasource",
                "hide": 0,
                "includeAll": true,
-               "label": "cluster",
+               "label": "app",
                "multi": true,
-               "name": "cluster",
+               "name": "app",
                "options": [ ],
-               "query": "label_values(cortex_build_info, cluster)",
-               "refresh": 1,
-               "regex": "",
-               "sort": 2,
-               "tagValuesQuery": "",
-               "tags": [ ],
-               "tagsQuery": "",
-               "type": "query",
-               "useTags": false
-            },
-            {
-               "allValue": ".+",
-               "current": {
-                  "selected": true,
-                  "text": "All",
-                  "value": "$__all"
-               },
-               "datasource": "$datasource",
-               "hide": 0,
-               "includeAll": true,
-               "label": "namespace",
-               "multi": true,
-               "name": "namespace",
-               "options": [ ],
-               "query": "label_values(cortex_build_info{cluster=~\"$cluster\"}, namespace)",
+               "query": "label_values(cortex_build_info, app)",
                "refresh": 1,
                "regex": "",
                "sort": 2,

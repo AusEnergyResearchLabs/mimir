@@ -81,7 +81,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance) (rate(node_cpu_seconds_total{mode=\"user\",cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-query-frontend.*\"}[$__rate_interval]))",
+                        "expr": "sum by(instance) (rate(node_cpu_seconds_total{mode=\"user\",app=~\"$app\",instance=~\".*ruler-query-frontend.*\"}[$__rate_interval]))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -170,7 +170,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "node_memory_MemTotal_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-query-frontend.*\"}\n- node_memory_MemFree_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-query-frontend.*\"}\n- node_memory_Buffers_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-query-frontend.*\"}\n- node_memory_Cached_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-query-frontend.*\"}\n- node_memory_Slab_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-query-frontend.*\"}\n- node_memory_PageTables_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-query-frontend.*\"}\n- node_memory_SwapCached_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-query-frontend.*\"}\n",
+                        "expr": "node_memory_MemTotal_bytes{app=~\"$app\",instance=~\".*ruler-query-frontend.*\"}\n- node_memory_MemFree_bytes{app=~\"$app\",instance=~\".*ruler-query-frontend.*\"}\n- node_memory_Buffers_bytes{app=~\"$app\",instance=~\".*ruler-query-frontend.*\"}\n- node_memory_Cached_bytes{app=~\"$app\",instance=~\".*ruler-query-frontend.*\"}\n- node_memory_Slab_bytes{app=~\"$app\",instance=~\".*ruler-query-frontend.*\"}\n- node_memory_PageTables_bytes{app=~\"$app\",instance=~\".*ruler-query-frontend.*\"}\n- node_memory_SwapCached_bytes{app=~\"$app\",instance=~\".*ruler-query-frontend.*\"}\n",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -244,7 +244,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance) (go_memstats_heap_inuse_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-query-frontend.*\"})",
+                        "expr": "sum by(instance) (go_memstats_heap_inuse_bytes{app=~\"$app\",instance=~\".*ruler-query-frontend.*\"})",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -345,7 +345,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance) (rate(node_cpu_seconds_total{mode=\"user\",cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-query-scheduler.*\"}[$__rate_interval]))",
+                        "expr": "sum by(instance) (rate(node_cpu_seconds_total{mode=\"user\",app=~\"$app\",instance=~\".*ruler-query-scheduler.*\"}[$__rate_interval]))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -434,7 +434,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "node_memory_MemTotal_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-query-scheduler.*\"}\n- node_memory_MemFree_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-query-scheduler.*\"}\n- node_memory_Buffers_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-query-scheduler.*\"}\n- node_memory_Cached_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-query-scheduler.*\"}\n- node_memory_Slab_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-query-scheduler.*\"}\n- node_memory_PageTables_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-query-scheduler.*\"}\n- node_memory_SwapCached_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-query-scheduler.*\"}\n",
+                        "expr": "node_memory_MemTotal_bytes{app=~\"$app\",instance=~\".*ruler-query-scheduler.*\"}\n- node_memory_MemFree_bytes{app=~\"$app\",instance=~\".*ruler-query-scheduler.*\"}\n- node_memory_Buffers_bytes{app=~\"$app\",instance=~\".*ruler-query-scheduler.*\"}\n- node_memory_Cached_bytes{app=~\"$app\",instance=~\".*ruler-query-scheduler.*\"}\n- node_memory_Slab_bytes{app=~\"$app\",instance=~\".*ruler-query-scheduler.*\"}\n- node_memory_PageTables_bytes{app=~\"$app\",instance=~\".*ruler-query-scheduler.*\"}\n- node_memory_SwapCached_bytes{app=~\"$app\",instance=~\".*ruler-query-scheduler.*\"}\n",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -508,7 +508,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance) (go_memstats_heap_inuse_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-query-scheduler.*\"})",
+                        "expr": "sum by(instance) (go_memstats_heap_inuse_bytes{app=~\"$app\",instance=~\".*ruler-query-scheduler.*\"})",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -609,7 +609,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance) (rate(node_cpu_seconds_total{mode=\"user\",cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-querier.*\"}[$__rate_interval]))",
+                        "expr": "sum by(instance) (rate(node_cpu_seconds_total{mode=\"user\",app=~\"$app\",instance=~\".*ruler-querier.*\"}[$__rate_interval]))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -698,7 +698,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "node_memory_MemTotal_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-querier.*\"}\n- node_memory_MemFree_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-querier.*\"}\n- node_memory_Buffers_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-querier.*\"}\n- node_memory_Cached_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-querier.*\"}\n- node_memory_Slab_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-querier.*\"}\n- node_memory_PageTables_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-querier.*\"}\n- node_memory_SwapCached_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-querier.*\"}\n",
+                        "expr": "node_memory_MemTotal_bytes{app=~\"$app\",instance=~\".*ruler-querier.*\"}\n- node_memory_MemFree_bytes{app=~\"$app\",instance=~\".*ruler-querier.*\"}\n- node_memory_Buffers_bytes{app=~\"$app\",instance=~\".*ruler-querier.*\"}\n- node_memory_Cached_bytes{app=~\"$app\",instance=~\".*ruler-querier.*\"}\n- node_memory_Slab_bytes{app=~\"$app\",instance=~\".*ruler-querier.*\"}\n- node_memory_PageTables_bytes{app=~\"$app\",instance=~\".*ruler-querier.*\"}\n- node_memory_SwapCached_bytes{app=~\"$app\",instance=~\".*ruler-querier.*\"}\n",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -772,7 +772,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance) (go_memstats_heap_inuse_bytes{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ruler-querier.*\"})",
+                        "expr": "sum by(instance) (go_memstats_heap_inuse_bytes{app=~\"$app\",instance=~\".*ruler-querier.*\"})",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -845,29 +845,6 @@
                "type": "datasource"
             },
             {
-               "allValue": ".*",
-               "current": {
-                  "text": "prod",
-                  "value": "prod"
-               },
-               "datasource": "$datasource",
-               "hide": 0,
-               "includeAll": true,
-               "label": "cluster",
-               "multi": false,
-               "name": "cluster",
-               "options": [ ],
-               "query": "label_values(cortex_build_info, cluster)",
-               "refresh": 1,
-               "regex": "",
-               "sort": 2,
-               "tagValuesQuery": "",
-               "tags": [ ],
-               "tagsQuery": "",
-               "type": "query",
-               "useTags": false
-            },
-            {
                "allValue": null,
                "current": {
                   "text": "prod",
@@ -876,11 +853,11 @@
                "datasource": "$datasource",
                "hide": 0,
                "includeAll": false,
-               "label": "namespace",
+               "label": "app",
                "multi": false,
-               "name": "namespace",
+               "name": "app",
                "options": [ ],
-               "query": "label_values(cortex_build_info{cluster=~\"$cluster\"}, namespace)",
+               "query": "label_values(cortex_build_info, app)",
                "refresh": 1,
                "regex": "",
                "sort": 2,

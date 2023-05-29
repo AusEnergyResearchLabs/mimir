@@ -5,18 +5,18 @@
   queries:: {
     // Define the supported replacement variables in a single place. Most of them are frequently used.
     local variables = {
-      gatewayMatcher: $.jobMatcher($._config.job_names.gateway),
-      distributorMatcher: $.jobMatcher($._config.job_names.distributor),
-      queryFrontendMatcher: $.jobMatcher($._config.job_names.query_frontend),
-      rulerMatcher: $.jobMatcher($._config.job_names.ruler),
-      alertmanagerMatcher: $.jobMatcher($._config.job_names.alertmanager),
+      gatewayMatcher: $.appMatcher($._config.app_names.gateway),
+      distributorMatcher: $.appMatcher($._config.app_names.distributor),
+      queryFrontendMatcher: $.appMatcher($._config.app_names.query_frontend),
+      rulerMatcher: $.appMatcher($._config.app_names.ruler),
+      alertmanagerMatcher: $.appMatcher($._config.app_names.alertmanager),
       namespaceMatcher: $.namespaceMatcher(),
       writeHTTPRoutesRegex: $.queries.write_http_routes_regex,
       writeGRPCRoutesRegex: $.queries.write_grpc_routes_regex,
       readHTTPRoutesRegex: $.queries.read_http_routes_regex,
       perClusterLabel: $._config.per_cluster_label,
-      recordingRulePrefix: $.recordingRulePrefix($.jobSelector('any')),  // The job name does not matter here.
-      groupPrefixJobs: $._config.group_prefix_jobs,
+      recordingRulePrefix: $.recordingRulePrefix($.appSelector('any')),  // The app name does not matter here.
+      groupPrefixapps: $._config.group_prefix_apps,
     },
 
     write_http_routes_regex: 'api_(v1|prom)_push|otlp_v1_metrics',
@@ -54,8 +54,8 @@
 
     distributor: {
       writeRequestsPerSecond: 'cortex_request_duration_seconds_count{%(distributorMatcher)s, route=~"%(writeGRPCRoutesRegex)s|%(writeHTTPRoutesRegex)s"}' % variables,
-      samplesPerSecond: 'sum(%(groupPrefixJobs)s:cortex_distributor_received_samples:rate5m{%(distributorMatcher)s})' % variables,
-      exemplarsPerSecond: 'sum(%(groupPrefixJobs)s:cortex_distributor_received_exemplars:rate5m{%(distributorMatcher)s})' % variables,
+      samplesPerSecond: 'sum(%(groupPrefixapps)s:cortex_distributor_received_samples:rate5m{%(distributorMatcher)s})' % variables,
+      exemplarsPerSecond: 'sum(%(groupPrefixapps)s:cortex_distributor_received_exemplars:rate5m{%(distributorMatcher)s})' % variables,
 
       // Write failures rate as percentage of total requests.
       writeFailuresRate: |||

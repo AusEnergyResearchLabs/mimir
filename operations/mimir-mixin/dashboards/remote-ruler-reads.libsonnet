@@ -41,7 +41,7 @@ local filename = 'mimir-remote-ruler-reads.json';
             )
           )
         ||| % {
-          queryFrontend: $.jobMatcher($._config.job_names.ruler_query_frontend),
+          queryFrontend: $.appMatcher($._config.app_names.ruler_query_frontend),
           rulerRoutesRegex: rulerRoutesRegex,
         }, format='reqps') +
         $.panelDescription(
@@ -56,16 +56,16 @@ local filename = 'mimir-remote-ruler-reads.json';
       $.row('Query-frontend (dedicated to ruler)')
       .addPanel(
         $.panel('Requests / sec') +
-        $.qpsPanel('cortex_request_duration_seconds_count{%s, route=~"%s"}' % [$.jobMatcher($._config.job_names.ruler_query_frontend), rulerRoutesRegex])
+        $.qpsPanel('cortex_request_duration_seconds_count{%s, route=~"%s"}' % [$.appMatcher($._config.app_names.ruler_query_frontend), rulerRoutesRegex])
       )
       .addPanel(
         $.panel('Latency') +
-        utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.jobSelector($._config.job_names.ruler_query_frontend) + [utils.selector.re('route', rulerRoutesRegex)])
+        utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.appSelector($._config.app_names.ruler_query_frontend) + [utils.selector.re('route', rulerRoutesRegex)])
       )
       .addPanel(
         $.timeseriesPanel('Per %s p99 latency' % $._config.per_instance_label) +
         $.hiddenLegendQueryPanel(
-          'histogram_quantile(0.99, sum by(le, %s) (rate(cortex_request_duration_seconds_bucket{%s, route=~"%s"}[$__rate_interval])))' % [$._config.per_instance_label, $.jobMatcher($._config.job_names.ruler_query_frontend), rulerRoutesRegex], ''
+          'histogram_quantile(0.99, sum by(le, %s) (rate(cortex_request_duration_seconds_bucket{%s, route=~"%s"}[$__rate_interval])))' % [$._config.per_instance_label, $.appMatcher($._config.app_names.ruler_query_frontend), rulerRoutesRegex], ''
         )
       )
     )
@@ -73,27 +73,27 @@ local filename = 'mimir-remote-ruler-reads.json';
       $.row('Query-scheduler (dedicated to ruler)')
       .addPanel(
         $.panel('Requests / sec') +
-        $.qpsPanel('cortex_query_scheduler_queue_duration_seconds_count{%s}' % $.jobMatcher($._config.job_names.ruler_query_scheduler))
+        $.qpsPanel('cortex_query_scheduler_queue_duration_seconds_count{%s}' % $.appMatcher($._config.app_names.ruler_query_scheduler))
       )
       .addPanel(
         $.panel('Latency (time in queue)') +
-        $.latencyPanel('cortex_query_scheduler_queue_duration_seconds', '{%s}' % $.jobMatcher($._config.job_names.ruler_query_scheduler))
+        $.latencyPanel('cortex_query_scheduler_queue_duration_seconds', '{%s}' % $.appMatcher($._config.app_names.ruler_query_scheduler))
       )
     )
     .addRow(
       $.row('Querier (dedicated to ruler)')
       .addPanel(
         $.panel('Requests / sec') +
-        $.qpsPanel('cortex_querier_request_duration_seconds_count{%s, route=~"%s"}' % [$.jobMatcher($._config.job_names.ruler_querier), $.queries.read_http_routes_regex])
+        $.qpsPanel('cortex_querier_request_duration_seconds_count{%s, route=~"%s"}' % [$.appMatcher($._config.app_names.ruler_querier), $.queries.read_http_routes_regex])
       )
       .addPanel(
         $.panel('Latency') +
-        utils.latencyRecordingRulePanel('cortex_querier_request_duration_seconds', $.jobSelector($._config.job_names.ruler_querier) + [utils.selector.re('route', $.queries.read_http_routes_regex)])
+        utils.latencyRecordingRulePanel('cortex_querier_request_duration_seconds', $.appSelector($._config.app_names.ruler_querier) + [utils.selector.re('route', $.queries.read_http_routes_regex)])
       )
       .addPanel(
         $.timeseriesPanel('Per %s p99 latency' % $._config.per_instance_label) +
         $.hiddenLegendQueryPanel(
-          'histogram_quantile(0.99, sum by(le, %s) (rate(cortex_querier_request_duration_seconds_bucket{%s, route=~"%s"}[$__rate_interval])))' % [$._config.per_instance_label, $.jobMatcher($._config.job_names.ruler_querier), $.queries.read_http_routes_regex], ''
+          'histogram_quantile(0.99, sum by(le, %s) (rate(cortex_querier_request_duration_seconds_bucket{%s, route=~"%s"}[$__rate_interval])))' % [$._config.per_instance_label, $.appMatcher($._config.app_names.ruler_querier), $.queries.read_http_routes_regex], ''
         )
       )
     )

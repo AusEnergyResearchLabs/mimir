@@ -66,7 +66,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance) (rate(node_network_receive_bytes_total{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*(distributor|ingester|mimir-write).*\"}[$__rate_interval]))",
+                        "expr": "sum by(instance) (rate(node_network_receive_bytes_total{app=~\"$app\",instance=~\".*(distributor|ingester|mimir-write).*\"}[$__rate_interval]))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -142,7 +142,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance) (rate(node_network_transmit_bytes_total{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*(distributor|ingester|mimir-write).*\"}[$__rate_interval]))",
+                        "expr": "sum by(instance) (rate(node_network_transmit_bytes_total{app=~\"$app\",instance=~\".*(distributor|ingester|mimir-write).*\"}[$__rate_interval]))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -218,7 +218,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "avg(cortex_inflight_requests{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*(distributor|ingester|mimir-write).*\"})",
+                        "expr": "avg(cortex_inflight_requests{app=~\"$app\",instance=~\".*(distributor|ingester|mimir-write).*\"})",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "avg",
@@ -226,7 +226,7 @@
                         "step": 10
                      },
                      {
-                        "expr": "max(cortex_inflight_requests{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*(distributor|ingester|mimir-write).*\"})",
+                        "expr": "max(cortex_inflight_requests{app=~\"$app\",instance=~\".*(distributor|ingester|mimir-write).*\"})",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "highest",
@@ -302,7 +302,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "avg(sum by(instance) (cortex_tcp_connections{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*(distributor|ingester|mimir-write).*\"}))",
+                        "expr": "avg(sum by(instance) (cortex_tcp_connections{app=~\"$app\",instance=~\".*(distributor|ingester|mimir-write).*\"}))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "avg",
@@ -310,7 +310,7 @@
                         "step": 10
                      },
                      {
-                        "expr": "max(sum by(instance) (cortex_tcp_connections{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*(distributor|ingester|mimir-write).*\"}))",
+                        "expr": "max(sum by(instance) (cortex_tcp_connections{app=~\"$app\",instance=~\".*(distributor|ingester|mimir-write).*\"}))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "highest",
@@ -318,7 +318,7 @@
                         "step": 10
                      },
                      {
-                        "expr": "min(cortex_tcp_connections_limit{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*(distributor|ingester|mimir-write).*\"})",
+                        "expr": "min(cortex_tcp_connections_limit{app=~\"$app\",instance=~\".*(distributor|ingester|mimir-write).*\"})",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "limit",
@@ -406,7 +406,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance) (rate(node_network_receive_bytes_total{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*distributor.*\"}[$__rate_interval]))",
+                        "expr": "sum by(instance) (rate(node_network_receive_bytes_total{app=~\"$app\",instance=~\".*distributor.*\"}[$__rate_interval]))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -482,7 +482,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance) (rate(node_network_transmit_bytes_total{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*distributor.*\"}[$__rate_interval]))",
+                        "expr": "sum by(instance) (rate(node_network_transmit_bytes_total{app=~\"$app\",instance=~\".*distributor.*\"}[$__rate_interval]))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -558,7 +558,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "avg(cortex_inflight_requests{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*distributor.*\"})",
+                        "expr": "avg(cortex_inflight_requests{app=~\"$app\",instance=~\".*distributor.*\"})",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "avg",
@@ -566,7 +566,7 @@
                         "step": 10
                      },
                      {
-                        "expr": "max(cortex_inflight_requests{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*distributor.*\"})",
+                        "expr": "max(cortex_inflight_requests{app=~\"$app\",instance=~\".*distributor.*\"})",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "highest",
@@ -642,7 +642,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "avg(sum by(instance) (cortex_tcp_connections{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*distributor.*\"}))",
+                        "expr": "avg(sum by(instance) (cortex_tcp_connections{app=~\"$app\",instance=~\".*distributor.*\"}))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "avg",
@@ -650,7 +650,7 @@
                         "step": 10
                      },
                      {
-                        "expr": "max(sum by(instance) (cortex_tcp_connections{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*distributor.*\"}))",
+                        "expr": "max(sum by(instance) (cortex_tcp_connections{app=~\"$app\",instance=~\".*distributor.*\"}))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "highest",
@@ -658,7 +658,7 @@
                         "step": 10
                      },
                      {
-                        "expr": "min(cortex_tcp_connections_limit{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*distributor.*\"})",
+                        "expr": "min(cortex_tcp_connections_limit{app=~\"$app\",instance=~\".*distributor.*\"})",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "limit",
@@ -746,7 +746,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance) (rate(node_network_receive_bytes_total{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ingester.*\"}[$__rate_interval]))",
+                        "expr": "sum by(instance) (rate(node_network_receive_bytes_total{app=~\"$app\",instance=~\".*ingester.*\"}[$__rate_interval]))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -822,7 +822,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "sum by(instance) (rate(node_network_transmit_bytes_total{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ingester.*\"}[$__rate_interval]))",
+                        "expr": "sum by(instance) (rate(node_network_transmit_bytes_total{app=~\"$app\",instance=~\".*ingester.*\"}[$__rate_interval]))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "{{instance}}",
@@ -898,7 +898,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "avg(cortex_inflight_requests{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ingester.*\"})",
+                        "expr": "avg(cortex_inflight_requests{app=~\"$app\",instance=~\".*ingester.*\"})",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "avg",
@@ -906,7 +906,7 @@
                         "step": 10
                      },
                      {
-                        "expr": "max(cortex_inflight_requests{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ingester.*\"})",
+                        "expr": "max(cortex_inflight_requests{app=~\"$app\",instance=~\".*ingester.*\"})",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "highest",
@@ -982,7 +982,7 @@
                   "steppedLine": false,
                   "targets": [
                      {
-                        "expr": "avg(sum by(instance) (cortex_tcp_connections{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ingester.*\"}))",
+                        "expr": "avg(sum by(instance) (cortex_tcp_connections{app=~\"$app\",instance=~\".*ingester.*\"}))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "avg",
@@ -990,7 +990,7 @@
                         "step": 10
                      },
                      {
-                        "expr": "max(sum by(instance) (cortex_tcp_connections{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ingester.*\"}))",
+                        "expr": "max(sum by(instance) (cortex_tcp_connections{app=~\"$app\",instance=~\".*ingester.*\"}))",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "highest",
@@ -998,7 +998,7 @@
                         "step": 10
                      },
                      {
-                        "expr": "min(cortex_tcp_connections_limit{cluster=~\"$cluster\", namespace=~\"$namespace\",instance=~\".*ingester.*\"})",
+                        "expr": "min(cortex_tcp_connections_limit{app=~\"$app\",instance=~\".*ingester.*\"})",
                         "format": "time_series",
                         "intervalFactor": 2,
                         "legendFormat": "limit",
@@ -1073,29 +1073,6 @@
                "type": "datasource"
             },
             {
-               "allValue": ".*",
-               "current": {
-                  "text": "prod",
-                  "value": "prod"
-               },
-               "datasource": "$datasource",
-               "hide": 0,
-               "includeAll": true,
-               "label": "cluster",
-               "multi": false,
-               "name": "cluster",
-               "options": [ ],
-               "query": "label_values(cortex_build_info, cluster)",
-               "refresh": 1,
-               "regex": "",
-               "sort": 2,
-               "tagValuesQuery": "",
-               "tags": [ ],
-               "tagsQuery": "",
-               "type": "query",
-               "useTags": false
-            },
-            {
                "allValue": null,
                "current": {
                   "text": "prod",
@@ -1104,11 +1081,11 @@
                "datasource": "$datasource",
                "hide": 0,
                "includeAll": false,
-               "label": "namespace",
+               "label": "app",
                "multi": false,
-               "name": "namespace",
+               "name": "app",
                "options": [ ],
-               "query": "label_values(cortex_build_info{cluster=~\"$cluster\"}, namespace)",
+               "query": "label_values(cortex_build_info, app)",
                "refresh": 1,
                "regex": "",
                "sort": 2,

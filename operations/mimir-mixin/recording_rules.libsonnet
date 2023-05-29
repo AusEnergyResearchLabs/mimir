@@ -12,57 +12,57 @@ local utils = import 'mixin-utils/utils.libsonnet';
       {
         name: 'mimir_api_1',
         rules:
-          utils.histogramRules('cortex_request_duration_seconds', [$._config.per_cluster_label, 'job'], $._config.recording_rules_range_interval),
+          utils.histogramRules('cortex_request_duration_seconds', [$._config.per_cluster_label, 'app'], $._config.recording_rules_range_interval),
       },
       {
         name: 'mimir_api_2',
         rules:
-          utils.histogramRules('cortex_request_duration_seconds', [$._config.per_cluster_label, 'job', 'route'], $._config.recording_rules_range_interval),
+          utils.histogramRules('cortex_request_duration_seconds', [$._config.per_cluster_label, 'app', 'route'], $._config.recording_rules_range_interval),
       },
       {
         name: 'mimir_api_3',
         rules:
-          utils.histogramRules('cortex_request_duration_seconds', $._config.job_labels + ['route'], $._config.recording_rules_range_interval),
+          utils.histogramRules('cortex_request_duration_seconds', $._config.app_labels + ['route'], $._config.recording_rules_range_interval),
       },
       {
         name: 'mimir_querier_api',
         rules:
-          utils.histogramRules('cortex_querier_request_duration_seconds', [$._config.per_cluster_label, 'job'], $._config.recording_rules_range_interval) +
-          utils.histogramRules('cortex_querier_request_duration_seconds', [$._config.per_cluster_label, 'job', 'route'], $._config.recording_rules_range_interval) +
-          utils.histogramRules('cortex_querier_request_duration_seconds', $._config.job_labels + ['route'], $._config.recording_rules_range_interval),
+          utils.histogramRules('cortex_querier_request_duration_seconds', [$._config.per_cluster_label, 'app'], $._config.recording_rules_range_interval) +
+          utils.histogramRules('cortex_querier_request_duration_seconds', [$._config.per_cluster_label, 'app', 'route'], $._config.recording_rules_range_interval) +
+          utils.histogramRules('cortex_querier_request_duration_seconds', $._config.app_labels + ['route'], $._config.recording_rules_range_interval),
       },
       {
         name: 'mimir_cache',
         rules:
-          utils.histogramRules('cortex_memcache_request_duration_seconds', [$._config.per_cluster_label, 'job', 'method'], $._config.recording_rules_range_interval) +
-          utils.histogramRules('cortex_cache_request_duration_seconds', [$._config.per_cluster_label, 'job'], $._config.recording_rules_range_interval) +
-          utils.histogramRules('cortex_cache_request_duration_seconds', [$._config.per_cluster_label, 'job', 'method'], $._config.recording_rules_range_interval),
+          utils.histogramRules('cortex_memcache_request_duration_seconds', [$._config.per_cluster_label, 'app', 'method'], $._config.recording_rules_range_interval) +
+          utils.histogramRules('cortex_cache_request_duration_seconds', [$._config.per_cluster_label, 'app'], $._config.recording_rules_range_interval) +
+          utils.histogramRules('cortex_cache_request_duration_seconds', [$._config.per_cluster_label, 'app', 'method'], $._config.recording_rules_range_interval),
       },
       {
         name: 'mimir_storage',
         rules:
-          utils.histogramRules('cortex_kv_request_duration_seconds', [$._config.per_cluster_label, 'job'], $._config.recording_rules_range_interval),
+          utils.histogramRules('cortex_kv_request_duration_seconds', [$._config.per_cluster_label, 'app'], $._config.recording_rules_range_interval),
       },
       {
         name: 'mimir_queries',
         rules:
-          utils.histogramRules('cortex_query_frontend_retries', [$._config.per_cluster_label, 'job'], $._config.recording_rules_range_interval) +
-          utils.histogramRules('cortex_query_frontend_queue_duration_seconds', [$._config.per_cluster_label, 'job'], $._config.recording_rules_range_interval),
+          utils.histogramRules('cortex_query_frontend_retries', [$._config.per_cluster_label, 'app'], $._config.recording_rules_range_interval) +
+          utils.histogramRules('cortex_query_frontend_queue_duration_seconds', [$._config.per_cluster_label, 'app'], $._config.recording_rules_range_interval),
       },
       {
         name: 'mimir_ingester_queries',
         rules:
-          utils.histogramRules('cortex_ingester_queried_series', [$._config.per_cluster_label, 'job'], $._config.recording_rules_range_interval) +
-          utils.histogramRules('cortex_ingester_queried_samples', [$._config.per_cluster_label, 'job'], $._config.recording_rules_range_interval) +
-          utils.histogramRules('cortex_ingester_queried_exemplars', [$._config.per_cluster_label, 'job'], $._config.recording_rules_range_interval),
+          utils.histogramRules('cortex_ingester_queried_series', [$._config.per_cluster_label, 'app'], $._config.recording_rules_range_interval) +
+          utils.histogramRules('cortex_ingester_queried_samples', [$._config.per_cluster_label, 'app'], $._config.recording_rules_range_interval) +
+          utils.histogramRules('cortex_ingester_queried_exemplars', [$._config.per_cluster_label, 'app'], $._config.recording_rules_range_interval),
       },
       {
         name: 'mimir_received_samples',
         rules: [
           {
-            record: '%(group_prefix_jobs)s:cortex_distributor_received_samples:rate5m' % _config,
+            record: '%(group_prefix_apps)s:cortex_distributor_received_samples:rate5m' % _config,
             expr: |||
-              sum by (%(group_by_job)s) (rate(cortex_distributor_received_samples_total[5m]))
+              sum by (%(group_by_app)s) (rate(cortex_distributor_received_samples_total[5m]))
             ||| % _config,
           },
         ],
@@ -71,9 +71,9 @@ local utils = import 'mixin-utils/utils.libsonnet';
         name: 'mimir_exemplars_in',
         rules: [
           {
-            record: '%(group_prefix_jobs)s:cortex_distributor_exemplars_in:rate5m' % _config,
+            record: '%(group_prefix_apps)s:cortex_distributor_exemplars_in:rate5m' % _config,
             expr: |||
-              sum by (%(group_by_job)s) (rate(cortex_distributor_exemplars_in_total[5m]))
+              sum by (%(group_by_app)s) (rate(cortex_distributor_exemplars_in_total[5m]))
             ||| % _config,
           },
         ],
@@ -82,9 +82,9 @@ local utils = import 'mixin-utils/utils.libsonnet';
         name: 'mimir_received_exemplars',
         rules: [
           {
-            record: '%(group_prefix_jobs)s:cortex_distributor_received_exemplars:rate5m' % _config,
+            record: '%(group_prefix_apps)s:cortex_distributor_received_exemplars:rate5m' % _config,
             expr: |||
-              sum by (%(group_by_job)s) (rate(cortex_distributor_received_exemplars_total[5m]))
+              sum by (%(group_by_app)s) (rate(cortex_distributor_received_exemplars_total[5m]))
             ||| % _config,
           },
         ],
@@ -93,9 +93,9 @@ local utils = import 'mixin-utils/utils.libsonnet';
         name: 'mimir_exemplars_ingested',
         rules: [
           {
-            record: '%(group_prefix_jobs)s:cortex_ingester_ingested_exemplars:rate5m' % _config,
+            record: '%(group_prefix_apps)s:cortex_ingester_ingested_exemplars:rate5m' % _config,
             expr: |||
-              sum by (%(group_by_job)s) (rate(cortex_ingester_ingested_exemplars_total[5m]))
+              sum by (%(group_by_app)s) (rate(cortex_ingester_ingested_exemplars_total[5m]))
             ||| % _config,
           },
         ],
@@ -104,9 +104,9 @@ local utils = import 'mixin-utils/utils.libsonnet';
         name: 'mimir_exemplars_appended',
         rules: [
           {
-            record: '%(group_prefix_jobs)s:cortex_ingester_tsdb_exemplar_exemplars_appended:rate5m' % _config,
+            record: '%(group_prefix_apps)s:cortex_ingester_tsdb_exemplar_exemplars_appended:rate5m' % _config,
             expr: |||
-              sum by (%(group_by_job)s) (rate(cortex_ingester_tsdb_exemplar_exemplars_appended_total[5m]))
+              sum by (%(group_by_app)s) (rate(cortex_ingester_tsdb_exemplar_exemplars_appended_total[5m]))
             ||| % _config,
           },
         ],
@@ -129,7 +129,7 @@ local utils = import 'mixin-utils/utils.libsonnet';
               ceil(
                 quantile_over_time(0.99,
                   sum by (%(alert_aggregation_labels)s) (
-                    %(group_prefix_jobs)s:cortex_distributor_received_samples:rate5m
+                    %(group_prefix_apps)s:cortex_distributor_received_samples:rate5m
                   )[24h:]
                 )
                 / %(max_samples_per_sec_per_distributor)s
@@ -163,7 +163,7 @@ local utils = import 'mixin-utils/utils.libsonnet';
               ceil(
                 quantile_over_time(0.99,
                   sum by (%(alert_aggregation_labels)s) (
-                    %(group_prefix_jobs)s:cortex_distributor_received_samples:rate5m
+                    %(group_prefix_apps)s:cortex_distributor_received_samples:rate5m
                   )[24h:]
                 )
                 * 3 / %(max_samples_per_sec_per_ingester)s
@@ -228,11 +228,11 @@ local utils = import 'mixin-utils/utils.libsonnet';
             expr: |||
               ceil(
                 (sum by (%(alert_aggregation_labels)s) (
-                  cortex_ingester_tsdb_storage_blocks_bytes{job=~".+/ingester.*"}
+                  cortex_ingester_tsdb_storage_blocks_bytes{app=~".+/ingester.*"}
                 ) / 4)
                   /
                 avg by (%(alert_aggregation_labels)s) (
-                  memcached_limit_bytes{job=~".+/memcached"}
+                  memcached_limit_bytes{app=~".+/memcached"}
                 )
               )
             ||| % _config,
@@ -274,63 +274,63 @@ local utils = import 'mixin-utils/utils.libsonnet';
         rules: [
           // Aggregations of per-user Alertmanager metrics used in dashboards.
           {
-            record: '%s_job_%s:cortex_alertmanager_alerts:sum' % [$._config.per_cluster_label, $._config.per_instance_label],
+            record: '%s_app_%s:cortex_alertmanager_alerts:sum' % [$._config.per_cluster_label, $._config.per_instance_label],
             expr: |||
-              sum by (%s, job, %s) (cortex_alertmanager_alerts)
+              sum by (%s, app, %s) (cortex_alertmanager_alerts)
             ||| % [$._config.per_cluster_label, $._config.per_instance_label],
           },
           {
-            record: '%s_job_%s:cortex_alertmanager_silences:sum' % [$._config.per_cluster_label, $._config.per_instance_label],
+            record: '%s_app_%s:cortex_alertmanager_silences:sum' % [$._config.per_cluster_label, $._config.per_instance_label],
             expr: |||
-              sum by (%s, job, %s) (cortex_alertmanager_silences)
+              sum by (%s, app, %s) (cortex_alertmanager_silences)
             ||| % [$._config.per_cluster_label, $._config.per_instance_label],
           },
           {
-            record: '%s_job:cortex_alertmanager_alerts_received_total:rate5m' % $._config.per_cluster_label,
+            record: '%s_app:cortex_alertmanager_alerts_received_total:rate5m' % $._config.per_cluster_label,
             expr: |||
-              sum by (%(per_cluster_label)s, job) (rate(cortex_alertmanager_alerts_received_total[5m]))
+              sum by (%(per_cluster_label)s, app) (rate(cortex_alertmanager_alerts_received_total[5m]))
             ||| % _config,
           },
           {
-            record: '%s_job:cortex_alertmanager_alerts_invalid_total:rate5m' % $._config.per_cluster_label,
+            record: '%s_app:cortex_alertmanager_alerts_invalid_total:rate5m' % $._config.per_cluster_label,
             expr: |||
-              sum by (%(per_cluster_label)s, job) (rate(cortex_alertmanager_alerts_invalid_total[5m]))
+              sum by (%(per_cluster_label)s, app) (rate(cortex_alertmanager_alerts_invalid_total[5m]))
             ||| % _config,
           },
           {
-            record: '%s_job_integration:cortex_alertmanager_notifications_total:rate5m' % $._config.per_cluster_label,
+            record: '%s_app_integration:cortex_alertmanager_notifications_total:rate5m' % $._config.per_cluster_label,
             expr: |||
-              sum by (%(per_cluster_label)s, job, integration) (rate(cortex_alertmanager_notifications_total[5m]))
+              sum by (%(per_cluster_label)s, app, integration) (rate(cortex_alertmanager_notifications_total[5m]))
             ||| % _config,
           },
           {
-            record: '%s_job_integration:cortex_alertmanager_notifications_failed_total:rate5m' % $._config.per_cluster_label,
+            record: '%s_app_integration:cortex_alertmanager_notifications_failed_total:rate5m' % $._config.per_cluster_label,
             expr: |||
-              sum by (%(per_cluster_label)s, job, integration) (rate(cortex_alertmanager_notifications_failed_total[5m]))
+              sum by (%(per_cluster_label)s, app, integration) (rate(cortex_alertmanager_notifications_failed_total[5m]))
             ||| % _config,
           },
           {
-            record: '%s_job:cortex_alertmanager_state_replication_total:rate5m' % $._config.per_cluster_label,
+            record: '%s_app:cortex_alertmanager_state_replication_total:rate5m' % $._config.per_cluster_label,
             expr: |||
-              sum by (%(per_cluster_label)s, job) (rate(cortex_alertmanager_state_replication_total[5m]))
+              sum by (%(per_cluster_label)s, app) (rate(cortex_alertmanager_state_replication_total[5m]))
             ||| % _config,
           },
           {
-            record: '%s_job:cortex_alertmanager_state_replication_failed_total:rate5m' % $._config.per_cluster_label,
+            record: '%s_app:cortex_alertmanager_state_replication_failed_total:rate5m' % $._config.per_cluster_label,
             expr: |||
-              sum by (%(per_cluster_label)s, job) (rate(cortex_alertmanager_state_replication_failed_total[5m]))
+              sum by (%(per_cluster_label)s, app) (rate(cortex_alertmanager_state_replication_failed_total[5m]))
             ||| % _config,
           },
           {
-            record: '%s_job:cortex_alertmanager_partial_state_merges_total:rate5m' % $._config.per_cluster_label,
+            record: '%s_app:cortex_alertmanager_partial_state_merges_total:rate5m' % $._config.per_cluster_label,
             expr: |||
-              sum by (%(per_cluster_label)s, job) (rate(cortex_alertmanager_partial_state_merges_total[5m]))
+              sum by (%(per_cluster_label)s, app) (rate(cortex_alertmanager_partial_state_merges_total[5m]))
             ||| % _config,
           },
           {
-            record: '%s_job:cortex_alertmanager_partial_state_merges_failed_total:rate5m' % $._config.per_cluster_label,
+            record: '%s_app:cortex_alertmanager_partial_state_merges_failed_total:rate5m' % $._config.per_cluster_label,
             expr: |||
-              sum by (%(per_cluster_label)s, job) (rate(cortex_alertmanager_partial_state_merges_failed_total[5m]))
+              sum by (%(per_cluster_label)s, app) (rate(cortex_alertmanager_partial_state_merges_failed_total[5m]))
             ||| % _config,
           },
         ],

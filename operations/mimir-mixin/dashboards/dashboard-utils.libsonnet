@@ -85,13 +85,13 @@ local utils = import 'mixin-utils/utils.libsonnet';
 
         if multi then
           if $._config.singleBinary
-          then d.addMultiTemplate('job', $._config.dashboard_variables.job_query, $._config.per_job_label)
+          then d.addMultiTemplate('app', $._config.dashboard_variables.app_query, $._config.per_app_label)
           else d
                .addMultiTemplate('cluster', $._config.dashboard_variables.cluster_query, '%s' % $._config.per_cluster_label)
                .addMultiTemplate('namespace', $._config.dashboard_variables.namespace_query, '%s' % $._config.per_namespace_label)
         else
           if $._config.singleBinary
-          then d.addTemplate('job', $._config.dashboard_variables.job_query, $._config.per_job_label)
+          then d.addTemplate('app', $._config.dashboard_variables.app_query, $._config.per_app_label)
           else d
                .addTemplate('cluster', $._config.dashboard_variables.cluster_query, '%s' % $._config.per_cluster_label, allValue='.*', includeAll=true)
                .addTemplate('namespace', $._config.dashboard_variables.namespace_query, '%s' % $._config.per_namespace_label),
@@ -140,27 +140,27 @@ local utils = import 'mixin-utils/utils.libsonnet';
       filename: std.strReplace(filename, '.json', ''),
     },
 
-  // The mixin allow specialism of the job selector depending on if its a single binary
+  // The mixin allow specialism of the app selector depending on if its a single binary
   // deployment or a namespaced one.
-  jobMatcher(job)::
+  appMatcher(app)::
     if $._config.singleBinary
-    then '%s=~"$job"' % $._config.per_job_label
-    else '%s=~"$cluster", %s=~"%s(%s)"' % [$._config.per_cluster_label, $._config.per_job_label, $._config.job_prefix, formatJobForQuery(job)],
+    then '%s=~"$app"' % $._config.per_app_label
+    else '%s=~"$cluster", %s=~"%s(%s)"' % [$._config.per_cluster_label, $._config.per_app_label, $._config.app_prefix, formatappForQuery(app)],
 
-  local formatJobForQuery(job) =
-    if std.isArray(job) then '(%s)' % std.join('|', job)
-    else if std.isString(job) then job
-    else error 'expected job "%s" to be a string or an array, but it is type "%s"' % [job, std.type(job)],
+  local formatappForQuery(app) =
+    if std.isArray(app) then '(%s)' % std.join('|', app)
+    else if std.isString(app) then app
+    else error 'expected app "%s" to be a string or an array, but it is type "%s"' % [app, std.type(app)],
 
   namespaceMatcher()::
     if $._config.singleBinary
-    then '%s=~"$job"' % $._config.per_job_label
+    then '%s=~"$app"' % $._config.per_app_label
     else '%s=~"$cluster", %s=~"$namespace"' % [$._config.per_cluster_label, $._config.per_namespace_label],
 
-  jobSelector(job)::
+  appSelector(app)::
     if $._config.singleBinary
-    then [utils.selector.noop('%s' % $._config.per_cluster_label), utils.selector.re($._config.per_job_label, '$job')]
-    else [utils.selector.re('%s' % $._config.per_cluster_label, '$cluster'), utils.selector.re($._config.per_job_label, '($namespace)/(%s)' % formatJobForQuery(job))],
+    then [utils.selector.noop('%s' % $._config.per_cluster_label), utils.selector.re($._config.per_app_label, '$app')]
+    else [utils.selector.re('%s' % $._config.per_cluster_label, '$cluster'), utils.selector.re($._config.per_app_label, '($namespace)/(%s)' % formatappForQuery(app))],
 
   recordingRulePrefix(selectors)::
     std.join('_', [matcher.label for matcher in selectors]),
@@ -452,7 +452,7 @@ local utils = import 'mixin-utils/utils.libsonnet';
 
   // The provided componentName should be the name of a component among the ones defined in $._config.instance_names.
   containerNetworkingRowByComponent(title, componentName)::
-    // Match series using namespace + instance instead of the job so that we can
+    // Match series using namespace + instance instead of the app so that we can
     // select only specific deployments (e.g. "distributor in microservices mode").
     local vars = $._config {
       instanceLabel: $._config.per_instance_label,
@@ -481,15 +481,15 @@ local utils = import 'mixin-utils/utils.libsonnet';
       { fill: 0 }
     ),
 
-  kvStoreRow(title, jobName, kvName)::
+  kvStoreRow(title, appName, kvName)::
     super.row(title)
     .addPanel(
       $.panel('Requests / sec') +
-      $.qpsPanel('cortex_kv_request_duration_seconds_count{%s, kv_name=~"%s"}' % [$.jobMatcher($._config.job_names[jobName]), kvName])
+      $.qpsPanel('cortex_kv_request_duration_seconds_count{%s, kv_name=~"%s"}' % [$.appMatcher($._config.app_names[appName]), kvName])
     )
     .addPanel(
       $.panel('Latency') +
-      $.latencyPanel('cortex_kv_request_duration_seconds', '{%s, kv_name=~"%s"}' % [$.jobMatcher($._config.job_names[jobName]), kvName])
+      $.latencyPanel('cortex_kv_request_duration_seconds', '{%s, kv_name=~"%s"}' % [$.appMatcher($._config.app_names[appName]), kvName])
     ),
 
   cpuAndMemoryBasedAutoScalingRow(componentTitle)::
@@ -809,9 +809,9 @@ local utils = import 'mixin-utils/utils.libsonnet';
     ),
   ],
 
-  thanosMemcachedCache(title, jobName, component, cacheName)::
+  thanosMemcachedCache(title, appName, component, cacheName)::
     local config = {
-      jobMatcher: $.jobMatcher(jobName),
+      appMatcher: $.appMatcher(appName),
       component: component,
       cacheName: cacheName,
     };
@@ -823,13 +823,13 @@ local utils = import 'mixin-utils/utils.libsonnet';
           sum by(operation) (
             # Backwards compatibility
             rate(thanos_memcached_operations_total{
-              %(jobMatcher)s,
+              %(appMatcher)s,
               component="%(component)s",
               name="%(cacheName)s"
             }[$__rate_interval])
             or ignoring(backend)
             rate(thanos_cache_operations_total{
-              %(jobMatcher)s,
+              %(appMatcher)s,
               component="%(component)s",
               name="%(cacheName)s"
             }[$__rate_interval])
@@ -847,7 +847,7 @@ local utils = import 'mixin-utils/utils.libsonnet';
         'thanos_cache_operation_duration_seconds',
         |||
           {
-            %(jobMatcher)s,
+            %(appMatcher)s,
             operation="getmulti",
             component="%(component)s",
             name="%(cacheName)s"
@@ -862,13 +862,13 @@ local utils = import 'mixin-utils/utils.libsonnet';
           sum(
             # Backwards compatibility
             rate(thanos_cache_memcached_hits_total{
-              %(jobMatcher)s,
+              %(appMatcher)s,
               component="%(component)s",
               name="%(cacheName)s"
             }[$__rate_interval])
             or
             rate(thanos_cache_hits_total{
-              %(jobMatcher)s,
+              %(appMatcher)s,
               component="%(component)s",
               name="%(cacheName)s"
             }[$__rate_interval])
@@ -877,13 +877,13 @@ local utils = import 'mixin-utils/utils.libsonnet';
           sum(
             # Backwards compatibility
             rate(thanos_cache_memcached_requests_total{
-              %(jobMatcher)s,
+              %(appMatcher)s,
               component="%(component)s",
               name="%(cacheName)s"
             }[$__rate_interval])
             or
             rate(thanos_cache_requests_total{
-              %(jobMatcher)s,
+              %(appMatcher)s,
               component="%(component)s",
               name="%(cacheName)s"
             }[$__rate_interval])

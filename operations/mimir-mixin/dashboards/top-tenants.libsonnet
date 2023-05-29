@@ -14,8 +14,8 @@ local filename = 'mimir-top-tenants.json';
     )
   ||| % {
     at: at,
-    ingester: $.jobMatcher($._config.job_names.ingester),
-    distributor: $.jobMatcher($._config.job_names.distributor),
+    ingester: $.appMatcher($._config.app_names.ingester),
+    distributor: $.appMatcher($._config.app_names.distributor),
     group_by_cluster: $._config.group_by_cluster,
   },
 
@@ -53,8 +53,8 @@ local filename = 'mimir-top-tenants.json';
                 )
               )
             ||| % {
-              ingester: $.jobMatcher($._config.job_names.ingester),
-              distributor: $.jobMatcher($._config.job_names.distributor),
+              ingester: $.appMatcher($._config.app_names.ingester),
+              distributor: $.appMatcher($._config.app_names.distributor),
               group_by_cluster: $._config.group_by_cluster,
             },
           ],
@@ -104,8 +104,8 @@ local filename = 'mimir-top-tenants.json';
         { sort: { col: 2, desc: true } } +
         $.tablePanel(
           [
-            'topk($limit, sum by (user) (rate(cortex_distributor_received_samples_total{%(job)s}[5m])))'
-            % { job: $.jobMatcher($._config.job_names.distributor) },
+            'topk($limit, sum by (user) (rate(cortex_distributor_received_samples_total{%(app)s}[5m])))'
+            % { app: $.appMatcher($._config.app_names.distributor) },
           ],
           { 'Value #A': { alias: 'samples/s' } }
         )
@@ -118,15 +118,15 @@ local filename = 'mimir-top-tenants.json';
         $.panel('Top $limit users by received samples rate that grew the most between query range start and query range end') +
         $.queryPanel(
           |||
-            sum by (user) (rate(cortex_distributor_received_samples_total{%(job)s}[$__rate_interval]))
+            sum by (user) (rate(cortex_distributor_received_samples_total{%(app)s}[$__rate_interval]))
             and
             topk($limit,
-              sum by (user) (rate(cortex_distributor_received_samples_total{%(job)s}[$__rate_interval] @ end()))
+              sum by (user) (rate(cortex_distributor_received_samples_total{%(app)s}[$__rate_interval] @ end()))
               -
-              sum by (user) (rate(cortex_distributor_received_samples_total{%(job)s}[$__rate_interval] @ start()))
+              sum by (user) (rate(cortex_distributor_received_samples_total{%(app)s}[$__rate_interval] @ start()))
             )
           ||| % {
-            job: $.jobMatcher($._config.job_names.distributor),
+            app: $.appMatcher($._config.app_names.distributor),
           },
           '{{ user }}',
         )
@@ -140,8 +140,8 @@ local filename = 'mimir-top-tenants.json';
         { sort: { col: 2, desc: true } } +
         $.tablePanel(
           [
-            'topk($limit, sum by (user) (rate(cortex_discarded_samples_total{%(job)s}[5m])))'
-            % { job: $.jobMatcher($._config.job_names.ingester + $._config.job_names.distributor) },
+            'topk($limit, sum by (user) (rate(cortex_discarded_samples_total{%(app)s}[5m])))'
+            % { app: $.appMatcher($._config.app_names.ingester + $._config.app_names.distributor) },
           ],
           { 'Value #A': { alias: 'samples/s' } }
         )
@@ -154,15 +154,15 @@ local filename = 'mimir-top-tenants.json';
         $.panel('Top $limit users by discarded samples rate that grew the most between query range start and query range end') +
         $.queryPanel(
           |||
-            sum by (user) (rate(cortex_discarded_samples_total{%(job)s}[$__rate_interval]))
+            sum by (user) (rate(cortex_discarded_samples_total{%(app)s}[$__rate_interval]))
             and
             topk($limit,
-              sum by (user) (rate(cortex_discarded_samples_total{%(job)s}[$__rate_interval] @ end()))
+              sum by (user) (rate(cortex_discarded_samples_total{%(app)s}[$__rate_interval] @ end()))
               -
-              sum by (user) (rate(cortex_discarded_samples_total{%(job)s}[$__rate_interval] @ start()))
+              sum by (user) (rate(cortex_discarded_samples_total{%(app)s}[$__rate_interval] @ start()))
             )
           ||| % {
-            job: $.jobMatcher($._config.job_names.ingester + $._config.job_names.distributor),
+            app: $.appMatcher($._config.app_names.ingester + $._config.app_names.distributor),
           },
           '{{ user }}',
         )
@@ -185,8 +185,8 @@ local filename = 'mimir-top-tenants.json';
                 )
               )
             ||| % {
-              ingester: $.jobMatcher($._config.job_names.ingester),
-              distributor: $.jobMatcher($._config.job_names.distributor),
+              ingester: $.appMatcher($._config.app_names.ingester),
+              distributor: $.appMatcher($._config.app_names.distributor),
               group_by_cluster: $._config.group_by_cluster,
             },
           ],
@@ -202,8 +202,8 @@ local filename = 'mimir-top-tenants.json';
         { sort: { col: 2, desc: true } } +
         $.tablePanel(
           [
-            'topk($limit, sum by (user) (rate(cortex_distributor_received_exemplars_total{%(job)s}[5m])))'
-            % { job: $.jobMatcher($._config.job_names.distributor) },
+            'topk($limit, sum by (user) (rate(cortex_distributor_received_exemplars_total{%(app)s}[5m])))'
+            % { app: $.appMatcher($._config.app_names.distributor) },
           ],
           { 'Value #A': { alias: 'exemplars/s' } }
         )
@@ -218,8 +218,8 @@ local filename = 'mimir-top-tenants.json';
         { sort: { col: 3, desc: true } } +
         $.tablePanel(
           [
-            'topk($limit, sum by (rule_group, user) (cortex_prometheus_rule_group_rules{%(job)s}))'
-            % { job: $.jobMatcher($._config.job_names.ruler) },
+            'topk($limit, sum by (rule_group, user) (cortex_prometheus_rule_group_rules{%(app)s}))'
+            % { app: $.appMatcher($._config.app_names.ruler) },
           ],
           { 'Value #A': { alias: 'rules' } }
         )
@@ -233,8 +233,8 @@ local filename = 'mimir-top-tenants.json';
         { sort: { col: 3, desc: true } } +
         $.tablePanel(
           [
-            'topk($limit, sum by (rule_group, user) (cortex_prometheus_rule_group_last_duration_seconds{%(job)s}))'
-            % { job: $.jobMatcher($._config.job_names.ruler) },
+            'topk($limit, sum by (rule_group, user) (cortex_prometheus_rule_group_last_duration_seconds{%(app)s}))'
+            % { app: $.appMatcher($._config.app_names.ruler) },
           ],
           { 'Value #A': { alias: 'seconds' } }
         )

@@ -9,13 +9,13 @@
   alertName(name)::
     $._config.product + name,
 
-  jobMatcher(job)::
-    'job=~".*/%s"' % formatJobForQuery(job),
+  appMatcher(app)::
+    'app=~".*/%s"' % formatappForQuery(app),
 
-  local formatJobForQuery(job) =
-    if std.isArray(job) then '(%s)' % std.join('|', job)
-    else if std.isString(job) then job
-    else error 'expected job "%s" to be a string or an array, but it is type "%s"' % [job, std.type(job)],
+  local formatappForQuery(app) =
+    if std.isArray(app) then '(%s)' % std.join('|', app)
+    else if std.isString(app) then app
+    else error 'expected app "%s" to be a string or an array, but it is type "%s"' % [app, std.type(app)],
 
   withRunbookURL(url_format, groups)::
     local update_rule(rule) =

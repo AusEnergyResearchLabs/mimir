@@ -19,8 +19,8 @@
     tags: ['mimir'],
 
     // If Mimir is deployed as a single binary, set to true to
-    // modify the job selectors in the dashboard queries.
-    singleBinary: false,
+    // modify the app selectors in the dashboard queries.
+    singleBinary: true,
 
     // This is mapping between a Mimir component name and the regular expression that should be used
     // to match its instance and container name. Mimir jsonnet and Helm guarantee that the instance name
@@ -68,7 +68,7 @@
     // microservice and single binary Mimir clusters.
     // Whenever you do any change here, please reflect it in the doc at:
     // docs/sources/mimir/operators-guide/monitoring-grafana-mimir/requirements.md
-    job_names: {
+    app_names: {
       ingester: ['ingester.*', 'cortex', 'mimir', 'mimir-write.*'],  // Match also custom and per-zone ingester deployments.
       distributor: ['distributor', 'cortex', 'mimir', 'mimir-write.*'],
       querier: ['querier.*', 'cortex', 'mimir', 'mimir-read.*'],  // Match also custom querier deployments.
@@ -85,7 +85,7 @@
       alertmanager: ['alertmanager', 'cortex', 'mimir', 'mimir-backend.*'],
       overrides_exporter: ['overrides-exporter', 'mimir-backend.*'],
 
-      // The following are job matchers used to select all components in a given "path".
+      // The following are app matchers used to select all components in a given "path".
       write: ['distributor', 'ingester.*', 'mimir-write.*'],
       read: ['query-frontend.*', 'querier.*', 'ruler-query-frontend.*', 'ruler-querier.*', 'mimir-read.*'],
       backend: ['ruler', 'query-scheduler.*', 'ruler-query-scheduler.*', 'store-gateway.*', 'compactor.*', 'alertmanager', 'overrides-exporter', 'mimir-backend.*'],
@@ -174,16 +174,16 @@
     // The label used to differentiate between different Kubernetes clusters.
     per_cluster_label: 'cluster',
     per_namespace_label: 'namespace',
-    per_job_label: 'job',
+    per_app_label: 'app',
 
-    // Grouping labels, to uniquely identify and group by {jobs, clusters}
-    job_labels: [$._config.per_cluster_label, $._config.per_namespace_label, $._config.per_job_label],
-    job_prefix: '($namespace)/',
+    // Grouping labels, to uniquely identify and group by {apps, clusters}
+    app_labels: [$._config.per_cluster_label, $._config.per_namespace_label, $._config.per_app_label],
+    app_prefix: '($namespace)/',
     cluster_labels: [$._config.per_cluster_label, $._config.per_namespace_label],
 
     // PromQL queries used to find clusters and namespaces with Mimir.
     dashboard_variables: {
-      job_query: 'cortex_build_info',  // Only used if singleBinary is true.
+      app_query: 'cortex_build_info',  // Only used if singleBinary is true.
       cluster_query: 'cortex_build_info',
       namespace_query: 'cortex_build_info{%s=~"$cluster"}' % $._config.per_cluster_label,
     },
@@ -219,7 +219,7 @@
       },
       baremetal: {
         memory_allocation: |||
-          (process_resident_memory_bytes{job=~".*/alertmanager"} / on(%(instanceLabel)s) node_memory_MemTotal_bytes{}) > %(allocationpercent)s
+          (process_resident_memory_bytes{app=~".*/alertmanager"} / on(%(instanceLabel)s) node_memory_MemTotal_bytes{}) > %(allocationpercent)s
         |||,
       },
     },
@@ -238,7 +238,7 @@
       baremetal: {
         memory_allocation: |||
           (
-            process_resident_memory_bytes{job=~".*/(%(ingester)s|%(mimir_write)s|%(mimir_backend)s)"}
+            process_resident_memory_bytes{app=~".*/(%(ingester)s|%(mimir_write)s|%(mimir_backend)s)"}
               /
             on(%(instanceLabel)s) node_memory_MemTotal_bytes{}
           ) > %(allocationpercent)s
@@ -321,7 +321,7 @@
           |||,
         cpu_required_replicas_count:
           |||
-            # Jobs should be sized to their CPU usage.
+            # apps should be sized to their CPU usage.
             # We do this by comparing 99th percentile usage over the last 24hrs to
             # their current provisioned #replicas and resource requests.
             ceil(
@@ -391,7 +391,7 @@
           |||,
         memory_required_replicas_count:
           |||
-            # Jobs should be sized to their Memory usage.
+            # apps should be sized to their Memory usage.
             # We do this by comparing 99th percentile usage over the last 24hrs to
             # their current provisioned #replicas and resource requests.
             ceil(
@@ -409,7 +409,7 @@
             sum by (%(alert_aggregation_labels)s, deployment) (
               label_replace(
                 cortex_build_info{namespace="baremetal"},
-                "deployment", "$1", "job", "baremetal/(.*)"
+                "deployment", "$1", "app", "baremetal/(.*)"
               )
             )
           |||,
@@ -419,7 +419,7 @@
               irate(
                 label_replace(
                   process_cpu_seconds_total{namespace="baremetal"},
-                  "deployment", "$1", "job", "baremetal/(.*)"
+                  "deployment", "$1", "app", "baremetal/(.*)"
                 )[5m:]
               )
             )
@@ -452,7 +452,7 @@
             sum by (%(alert_aggregation_labels)s, deployment) (
               label_replace(
                 process_resident_memory_bytes{namespace="baremetal"},
-                "deployment", "$1", "job", "baremetal/(.*)"
+                "deployment", "$1", "app", "baremetal/(.*)"
               )
             )
           |||,

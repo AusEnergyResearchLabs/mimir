@@ -124,9 +124,9 @@ local filename = 'mimir-overview.json';
       .addPanel(
         $.panel(std.stripChars('Write latency %(gatewayEnabledPanelTitleSuffix)s' % helpers, ' ')) + (
           if $._config.gateway_enabled then
-            utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.jobSelector($._config.job_names.gateway) + [utils.selector.re('route', $.queries.write_http_routes_regex)])
+            utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.appSelector($._config.app_names.gateway) + [utils.selector.re('route', $.queries.write_http_routes_regex)])
           else
-            utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.jobSelector($._config.job_names.distributor) + [utils.selector.re('route', '/distributor.Distributor/Push|/httpgrpc.*|%s' % $.queries.write_http_routes_regex)])
+            utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.appSelector($._config.app_names.distributor) + [utils.selector.re('route', '/distributor.Distributor/Push|/httpgrpc.*|%s' % $.queries.write_http_routes_regex)])
         )
       )
       .addPanel(
@@ -168,9 +168,9 @@ local filename = 'mimir-overview.json';
       .addPanel(
         $.panel(std.stripChars('Read latency %(gatewayEnabledPanelTitleSuffix)s' % helpers, ' ')) + (
           if $._config.gateway_enabled then
-            utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.jobSelector($._config.job_names.gateway) + [utils.selector.re('route', $.queries.read_http_routes_regex)])
+            utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.appSelector($._config.app_names.gateway) + [utils.selector.re('route', $.queries.read_http_routes_regex)])
           else
-            utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.jobSelector($._config.job_names.query_frontend) + [utils.selector.re('route', $.queries.read_http_routes_regex)])
+            utils.latencyRecordingRulePanel('cortex_request_duration_seconds', $.appSelector($._config.app_names.query_frontend) + [utils.selector.re('route', $.queries.read_http_routes_regex)])
         )
       )
       .addPanel(
@@ -265,7 +265,7 @@ local filename = 'mimir-overview.json';
         $.panel('Total number of blocks in the storage') +
         // Look at the max over the last 15m to correctly work during rollouts
         // (the metrics disappear until the next cleanup runs).
-        $.queryPanel('sum(max by(user) (max_over_time(cortex_bucket_blocks_count{%s}[15m])))' % $.jobMatcher($._config.job_names.compactor), 'blocks'),
+        $.queryPanel('sum(max by(user) (max_over_time(cortex_bucket_blocks_count{%s}[15m])))' % $.appMatcher($._config.app_names.compactor), 'blocks'),
       )
     ),
 }

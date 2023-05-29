@@ -23,10 +23,10 @@ local filename = 'mimir-scaling.json';
             - **active_series**: There are not enough replicas
               to handle the number of active series.  Applies to ingesters.
             - **cpu_usage**: There are not enough replicas
-              based on the CPU usage of the jobs vs the resource requests.
-              Applies to all jobs.
+              based on the CPU usage of the apps vs the resource requests.
+              Applies to all apps.
             - **memory_usage**: There are not enough replicas based on the memory
-              usage vs the resource requests.  Applies to all jobs.
+              usage vs the resource requests.  Applies to all apps.
             - **active_series_limits**: There are not enough replicas to hold 60% of the
               sum of all the per tenant series limits.
             - **sample_rate_limits**: There are not enough replicas to handle 60% of the
